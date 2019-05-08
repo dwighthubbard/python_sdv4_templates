@@ -40,4 +40,9 @@ config:
     -   install_tox: $BASE_PYTHON -m pip install tox
     -   update_version: echo "Update version"
     -   validate_code: tox $TOX_ARGS
+    -   codecov: |
+            if [ "$CODECOV_TOKEN" != "" ]; then
+                $BASE_PYTHON -m pip install codecov
+                codecov
+            fi
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
