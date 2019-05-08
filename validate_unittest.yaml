@@ -1,0 +1,50 @@
+namespace: pythonv5
+name: validate_unittest
+description: Run the unittest using the tox tool
+version: 2019.302.05635
+maintainer: python-devel@oath.com
+config:
+    image: quay.io/pypa/manylinux2010_x86_64
+    environment:
+        BASE_PYTHON: python3
+        GIT_SHALLOW_CLONE: false
+        LANG: en_US.UTF-8
+        TEST_RUNNER: pytest
+        TOX_ARGS: ''
+        TOX_ENVLIST: py36,py37,py38
+    steps:
+    -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
+    -   motd: |
+            cat << EOF
+            This step will run unittests using the tox tool
+            EOF
+    -   display_environment: printenv|sort
+    -   setup_environment: |
+            export PATH=/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp27-cp27m/bin:$PATH
+            export BINDIR="`dirname ${BASE_PYTHON}`"
+            if [ "$BINDIR" != "" ]; then
+                export PATH="${BINDIR}:${PATH}"
+            fi
+    -   init_os: |
+            PYTHON=`basename $BASE_PYTHON|sed "s/\.//"`
+            if [ -e "/usr/bin/apt-get" ]; then
+                echo "Updating the apt package list"
+                apt-get update
+            fi
+            if [ ! -e "$BASE_PYTHON" ]; then
+                if [ -e "/usr/bin/apt-get" ]; then
+                    echo "Found apt-get, configuring for debian distro"
+                    apt-get install -y ${PYTHON} ${PYTHON}-venv python3-pip
+                fi
+                if [ -e "/usr/bin/yum" ]; then
+                    echo "Found yum, configuring for rhel distro"
+                    if [ ! -e "/etc/yum.repos.d/python_rpms.repo" ]; then
+                        yum-config-manager --add-repo https://edge.artifactory.yahoo.com:4443/artifactory/python_rpms/python_rpms.repo
+                    fi
+                    yum install -y yahoo_${PYTHON}
+                fi
+            fi
+    -   install_tox: $BASE_PYTHOn -m pip install tox
+    -   update_version: echo "Update version"
+    -   validate_code: tox $TOX_ARGS
+    -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
