@@ -40,7 +40,7 @@ config:
             $BASE_PYTHON -m venv pylintvenv
             $VALID_VENV/bin/pip install setuptools wheel
     -   update_version: echo "Update version"
-    -   validate_code: |
+    -   package_code: |
             if [ -z "$PACKAGE_DIR"  ]; then
                 PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
             fi
@@ -50,6 +50,4 @@ config:
                 mkdir -p "$SD_ARTIFACTS_DIR/packages"
             fi
             cp dist/* "$SD_ARTIFACTS_DIR/packages" 
-    -   update_version: echo "Update version"
-    -   validate_code: tox $TOX_ARGS
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
