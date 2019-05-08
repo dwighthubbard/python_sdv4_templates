@@ -36,16 +36,6 @@ config:
                     echo "Found apt-get, configuring for debian distro"
                     apt-get install -y ${PYTHON} ${PYTHON}-venv python3-pip
                 fi
-                if [ -e "/usr/bin/yum" ]; then
-                    echo "Found yum, configuring for rhel distro"
-                    if [ ! -e "/usr/bin/yum-config-manager" ]; then
-                        yum install -y yum-utils
-                    fi
-                    if [ ! -e "/etc/yum.repos.d/python_rpms.repo" ]; then
-                        yum-config-manager --add-repo https://edge.artifactory.yahoo.com:4443/artifactory/python_rpms/python_rpms.repo
-                    fi
-                    yum install -y yahoo_${PYTHON}
-                fi
             fi
     -   install_tox: $BASE_PYTHOn -m pip install tox
     -   update_version: echo "Update version"
