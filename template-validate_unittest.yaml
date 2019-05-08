@@ -37,7 +37,7 @@ config:
                     apt-get install -y ${PYTHON} ${PYTHON}-venv python3-pip
                 fi
             fi
-    -   install_tox: $BASE_PYTHOn -m pip install tox
+    -   install_tox: $BASE_PYTHON -m pip install tox
     -   update_version: echo "Update version"
     -   validate_code: tox $TOX_ARGS
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
