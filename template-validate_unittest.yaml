@@ -1,7 +1,7 @@
-namespace: pythonv5
+namespace: python
 name: validate_unittest
 description: Run the unittest using the tox tool
-version: 2019.302.05635
+version: 1.0.0
 maintainer: python-devel@oath.com
 config:
     image: quay.io/pypa/manylinux2010_x86_64
