@@ -1,0 +1,56 @@
+namespace: python
+name: generate_version
+description: Package the application as an sdist package
+version: 1.0.0
+maintainer: python-devel@oath.com
+config:
+    image: quay.io/pypa/manylinux2010_x86_64
+    environment:
+        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
+        GIT_SHALLOW_CLONE: false
+        LANG: en_US.UTF-8
+    steps:
+    -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
+    -   motd: |
+            cat << EOF
+            This step will generate a new package verrsion and make it available in the CI Pipeline metadata
+            EOF
+    -   display_environment: printenv|sort
+    -   setup_environment: |
+            export PATH=/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp27-cp27m/bin:$PATH
+            export BINDIR="`dirname ${BASE_PYTHON}`"
+            if [ "$BINDIR" != "" ]; then
+                export PATH="${BINDIR}:${PATH}"
+            fi
+    -   init_os: |
+            PYTHON=`basename $BASE_PYTHON|sed "s/\.//"`
+            if [ -e "/usr/bin/apt-get" ]; then
+                echo "Updating the apt package list"
+                apt-get update
+            fi
+            if [ ! -e "$BASE_PYTHON" ]; then
+                if [ -e "/usr/bin/apt-get" ]; then
+                    echo "Found apt-get, configuring for debian distro"
+                    apt-get install -y ${PYTHON} ${PYTHON}-venv python3-pip
+                fi
+            fi
+    -   generate_version: |
+            $BASE_PYTHON << EOF
+            from configparser import ConfigParser
+            import subprocess
+            import sys
+            parser = ConfigParser()
+            with open('setup.cfg') as fh:
+                parser.read_file(fh)
+            version = parser.get('metadata', 'version', fallback=None)
+            if not version:
+                print('Unable to parse a version from the setup.cfg metadata section', file=sys.stderr)
+                sys.exit(1)
+            version_split = version.split('.')
+            version_split[-1] = str(int(version_split[-1]) + 1)
+            version = '.'.join(version_split)
+            print(f'New version: {version}')
+            subprocess.call(['meta', 'set', 'package.version', version]) 
+            EOF
+            
+    -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
