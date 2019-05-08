@@ -6,7 +6,7 @@ maintainer: python-devel@oath.com
 config:
     image: quay.io/pypa/manylinux2010_x86_64
     environment:
-        BASE_PYTHON: python3
+        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
         TEST_RUNNER: pytest
