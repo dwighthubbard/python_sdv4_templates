@@ -1,11 +1,8 @@
 version: 4
-shared:
-    settings:
-        slack: ['pythonbuildstatus']
 
 jobs:
     # the main job is run in pull requests as well
-    main:
+    publish_templates:
         image: node:6
         steps:
             - install: npm install screwdriver-template-main
