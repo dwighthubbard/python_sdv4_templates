@@ -1,0 +1,45 @@
+namespace: python
+name: validate_lint
+description: Run the unittest using the tox tool
+version: 1.0.0
+maintainer: python-devel@oath.com
+config:
+    image: quay.io/pypa/manylinux2010_x86_64
+    environment:
+        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
+        PACKAGE_DIR: ""
+        GIT_SHALLOW_CLONE: false
+        LANG: en_US.UTF-8
+    steps:
+    -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
+    -   motd: |
+            cat << EOF
+            This step will run unittests using the tox tool
+            EOF
+    -   display_environment: printenv|sort
+    -   setup_environment: |
+            export PATH=/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp27-cp27m/bin:$PATH
+            export BINDIR="`dirname ${BASE_PYTHON}`"
+            if [ "$BINDIR" != "" ]; then
+                export PATH="${BINDIR}:${PATH}"
+            fi
+    -   init_os: |
+            PYTHON=`basename $BASE_PYTHON|sed "s/\.//"`
+            if [ -e "/usr/bin/apt-get" ]; then
+                echo "Updating the apt package list"
+                apt-get update
+            fi
+            if [ ! -e "$BASE_PYTHON" ]; then
+                if [ -e "/usr/bin/apt-get" ]; then
+                    echo "Found apt-get, configuring for debian distro"
+                    apt-get install -y ${PYTHON} ${PYTHON}-venv python3-pip
+                fi
+            fi
+    -   update_package_dir: |
+            if [ "$PACKAGE_DIR" = "" ]; then
+                PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
+            fi
+    -   install_pylint: $BASE_PYTHON -m pip install pylint
+    -   update_version: echo "Update version"
+    -   validate_code: pylint --output-format=parseable $PACKAGE_DIR
+    -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
