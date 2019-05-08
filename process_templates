@@ -114,6 +114,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.command == 'publish':
         publish_templates()
-    elif args.command == 'validate:
+    elif args.command == 'validate':
         validate_templates()
  
