@@ -38,7 +38,7 @@ def generate_version():
 def templates():
     result = []
     for filename in os.listdir('.'):
-        if filename.startswith('python-v4-'):
+        if filename.startswith('template-'):
             result.append(filename)
     return result
 
