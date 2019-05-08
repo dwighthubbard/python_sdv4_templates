@@ -39,7 +39,23 @@ config:
             VALID_VENV="$SD_SOURCE_DIR/pylintvenv"
             $BASE_PYTHON -m venv pylintvenv
             $VALID_VENV/bin/pip install setuptools wheel
-    -   update_version: echo "Update version"
+    -   update_version: |
+            $BASE_PYTHON << EOF
+            from configparser import ConfigParser
+            import os
+            import subprocess
+            import sys
+            
+            version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
+            
+            parser = ConfigParser()
+            with open('setup.cfg') as fh:
+                parser.read_file(fh)
+            if 'metadata' in parser.sections():
+                version = parser.set('metadata', 'version', version)
+                with open('setup.cfg', 'w') as fh:
+                    parser.write(fh)
+            EOF
     -   package_code: |
             if [ -z "$PACKAGE_DIR"  ]; then
                 PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
