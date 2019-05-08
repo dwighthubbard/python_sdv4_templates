@@ -38,11 +38,11 @@ config:
                     apt-get install -y ${PYTHON} ${PYTHON}-venv python3-pip
                 fi
             fi
-    -   update_package_dir: |
-            if [ "$PACKAGE_DIR" = "" ]; then
-                PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
-            fi
     -   install_pylint: $BASE_PYTHON -m pip install pylint
     -   update_version: echo "Update version"
-    -   validate_code: pylint --output-format=parseable $PACKAGE_DIR
+    -   validate_code: |
+            if [ -z "$PACKAGE_DIR"  ]; then
+                PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
+            fi
+            pylint --output-format=parseable $PACKAGE_DIR
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
