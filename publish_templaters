@@ -1,0 +1,99 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import os
+import subprocess
+import sys
+
+
+BASE_VERSION = '0.2.0'
+
+
+def git_revision_count():
+    """
+    Get a count of the number of git commits and return the count
+    Returns
+    -------
+    int
+        Revision count or None if git was not found
+    """
+
+    try:
+        result = subprocess.check_output(['git', 'rev-list', '--count', 'HEAD'])
+    except subprocess.CalledProcessError:
+        return None
+
+    try:
+        result = int(result)
+    except ValueError:
+        pass
+    return result
+
+
+def generate_version():
+    version_split = BASE_VERSION.split('.')
+    version_split[-1] = str(git_revision_count())
+    return '.'.join(version_split)
+
+
+def templates():
+    result = []
+    for filename in os.listdir('.'):
+        if filename.startswith('python-v4-'):
+            result.append(filename)
+    return result
+
+
+def template_value(key, filename=None):
+    if not filename:
+        filename = os.environ['SD_TEMPLATE_PATH']
+
+    with open(filename) as handle:
+        for line in handle.readlines():
+            line = line.strip()
+            if ':' in line:
+                key_name = line.split(':')[0]
+                if key_name.strip() == key:
+                    return ':'.join(line.split(':')[1:]).strip().strip("'").strip('"').strip()
+
+
+def template_set(filename, key, value):
+    old = filename
+    new = filename + '.new'
+    with open(new, 'w') as new_handle:
+        with open(old) as old_handle:
+            for line in old_handle.readlines():
+                if not line.startswith(key + ':'):
+                    new_handle.write(line)
+                    continue
+                new_handle.write("%s: '%s'%s" % (key, value, os.linesep))
+    os.remove(old)
+    os.rename(new, old)
+
+
+def publish_template(filename, tag='stable'):
+    os.environ['SD_TEMPLATE_PATH'] = os.path.join('.', filename)
+    name = template_value('name')
+    version = template_value('version')
+
+    sys.stdout.write('Publishing template %s%s' % (name, os.linesep))
+    sys.stdout.flush()
+    subprocess.check_call(['./node_modules/.bin/template-validate'])
+    output = subprocess.check_output(['./node_modules/.bin/template-publish']).decode()
+    sys.stdout.write(output)
+    published_template_version = output.split()[1]
+    published_version = published_template_version.split('@')[1]
+    if published_version != version:
+        version = published_version
+    subprocess.check_call(['./node_modules/.bin/template-tag', '--name', name, '--version', version, '--tag', tag])
+
+
+def publish_templates(tag='stable'):
+    version = generate_version()  # Get the current version based on the number of git commits
+    for template in templates():
+        template_set(template, 'version', version)  # Update the version in the template to match our new version
+        publish_template(template, tag=tag)         # Publish the template
+        print('')
+
+
+if __name__ == '__main__':
+    publish_templates()
