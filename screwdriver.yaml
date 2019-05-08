@@ -1,13 +1,15 @@
 version: 4
 
 jobs:
-    # the main job is run in pull requests as well
     publish_templates:
         image: node:6
         steps:
             - install: npm install screwdriver-template-main
-            - publish: |
-                ./publish_templates
-        environment:
-            SD_TEMPLATE_PATH: python-v4-template.yaml
+            - publish: ./process_templates publish
         requires: [~commit]
+    validate_templates:
+        image: node:6
+        steps:
+            - install: npm install screwdriver-template-main
+            - validate: ./process_templates validate
+        requires: [~pr]
