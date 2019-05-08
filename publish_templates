@@ -84,7 +84,7 @@ def publish_template(filename, tag='stable'):
     published_version = published_template_version.split('@')[1]
     if published_version != version:
         version = published_version
-    subprocess.check_call(['./node_modules/.bin/template-tag', '--name', name, '--version', version, '--tag', tag])
+    # subprocess.check_call(['./node_modules/.bin/template-tag', '--name', name, '--version', version, '--tag', tag])
 
 
 def publish_templates(tag='stable'):
