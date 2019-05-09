@@ -5,7 +5,7 @@ version: 1.0.0
 maintainer: python-devel@oath.com
 config:
     #image: quay.io/pypa/manylinux2010_x86_64
-    image: ubuntu
+    image: ubuntu:18.04
     environment:
         # BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
         BASE_PYTHON: /usr/bin/python3
@@ -36,7 +36,8 @@ config:
             if [ ! -e "$BASE_PYTHON" ]; then
                 if [ -e "/usr/bin/apt-get" ]; then
                     echo "Found apt-get, configuring for debian distro"
-                    apt-get install -y ${PYTHON} ${PYTHON}-venv python3-pip
+                    apt-get update && apt-get upgrade
+                    apt-get install -y python3 python3-venv python3-pip
                 fi
             fi
     -   install_tox: $BASE_PYTHON -m pip install tox
