@@ -36,9 +36,9 @@ config:
                 fi
             fi
     -   install_utiliity: |
-            VALID_VENV="$SD_SOURCE_DIR/pylintvenv"
-            $BASE_PYTHON -m venv pylintvenv
-            $VALID_VENV/bin/pip install setuptools wheel
+            if [ ! -e "$BINDIR/wheel" ]; then
+                $BASE_PYTHON -m pip install setuptools wheel
+            fi
     -   update_version: |
             $BASE_PYTHON << EOF
             from configparser import ConfigParser
@@ -60,7 +60,7 @@ config:
             if [ -z "$PACKAGE_DIR"  ]; then
                 PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
             fi
-            $VALID_VENV/bin/python setup.py sdist $SETUP_ARGS
+            $BINDIR/python setup.py sdist $SETUP_ARGS
     -   store_package: |
             if [ ! -e "$SD_ARTIFACTS_DIR/packages" ]; then
                 mkdir -p "$SD_ARTIFACTS_DIR/packages"
