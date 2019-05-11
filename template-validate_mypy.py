@@ -38,8 +38,9 @@ config:
                     apt-get install -y ${PYTHON} ${PYTHON}-venv python3-pip
                 fi
             fi
-    -   install_app: |
-            $BASE_PYTHON -m pip install mypy .[mypy]
+    -   install_utility: |
+            $BASE_PYTHON -m pip install mypy 
+            $BASE_PYTHON -m pip install .[mypy]
     -   update_version: echo "Update version"
     -   validate_code: |
             if [ -z "$PACKAGE_DIR"  ]; then
