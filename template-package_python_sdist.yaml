@@ -60,7 +60,7 @@ config:
             if [ -z "$PACKAGE_DIR"  ]; then
                 PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
             fi
-            $BINDIR/python setup.py sdist $SETUP_ARGS
+            $BINDIR/python setup.py sdist bdist_wheel $SETUP_ARGS
     -   store_package: |
             if [ ! -e "$SD_ARTIFACTS_DIR/packages" ]; then
                 mkdir -p "$SD_ARTIFACTS_DIR/packages"
