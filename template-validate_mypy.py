@@ -1,6 +1,6 @@
 namespace: python
-name: validate_codestyle
-description: Run the unittest using the tox tool
+name: validate_mypy
+description: Run the mypy type validator
 version: 1.0.0
 maintainer: python-devel@oath.com
 config:
