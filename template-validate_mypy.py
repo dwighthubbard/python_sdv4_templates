@@ -45,5 +45,5 @@ config:
             if [ -z "$PACKAGE_DIR"  ]; then
                 PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
             fi
-            $BASE_PYTHON -m mypy $PACKAGE_DIR
+            $BIN_DIR/mypy $PACKAGE_DIR
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
