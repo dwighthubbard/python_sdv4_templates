@@ -36,7 +36,7 @@ config:
             if [ ! -e "$BASE_PYTHON" ]; then
                 if [ -e "/usr/bin/apt-get" ]; then
                     echo "Found apt-get, configuring for debian distro"
-                    apt-get update && apt-get upgrade
+                    apt-get update && apt-get upgrade -y
                     apt-get install -y python3 python3-venv python3-pip
                 fi
             fi
