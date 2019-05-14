@@ -32,7 +32,8 @@ config:
             export BINDIR="`dirname ${BASE_PYTHON}`"
             if [ "$BINDIR" != "" ]; then
                 export PATH="${BINDIR}:${PATH}"
-            fi    -   install_utiliity: |
+            fi    
+    -   install_utiliity: |
             if [ ! -e "$BINDIR/wheel" ]; then
                 $BASE_PYTHON -m pip install setuptools wheel pyroma
             fi
