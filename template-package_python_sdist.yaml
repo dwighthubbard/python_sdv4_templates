@@ -22,7 +22,7 @@ config:
             if [ -e "/usr/bin/apt-get" ]; then
                 echo "Updating the apt package list"
                 apt-get update
-                apt-get install python3 python3-venv python3-pip
+                apt-get install -y python3 python3-venv python3-pip
             fi
     -   setup_environment: |
             export PATH=/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp27-cp27m/bin:$PATH
