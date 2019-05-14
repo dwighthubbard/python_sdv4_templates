@@ -4,7 +4,8 @@ description: Package the application as an sdist package
 version: 1.0.0
 maintainer: python-devel@oath.com
 config:
-    image: quay.io/pypa/manylinux2010_x86_64
+    # image: quay.io/pypa/manylinux2010_x86_64
+    image: ubuntu:19.04
     environment:
         BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
         GIT_SHALLOW_CLONE: false
