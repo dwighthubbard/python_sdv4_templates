@@ -4,9 +4,10 @@ description: Package the application as an sdist package
 version: 1.0.0
 maintainer: python-devel@oath.com
 config:
-    image: quay.io/pypa/manylinux2010_x86_64
+    # image: quay.io/pypa/manylinux2010_x86_64
+    image: ubuntu:19.04
     environment:
-        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
+        BASE_PYTHON: ''
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
         SETUP_ARGS: ''
@@ -19,6 +20,9 @@ config:
     -   display_environment: printenv|sort
     -   setup_environment: |
             export PATH=/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp27-cp27m/bin:$PATH
+            if [ "$BASE_PYTHON" = "" ]; then
+                BASE_PYTHON="`which python3`"
+            fi
             export BINDIR="`dirname ${BASE_PYTHON}`"
             if [ "$BINDIR" != "" ]; then
                 export PATH="${BINDIR}:${PATH}"
@@ -70,7 +74,7 @@ config:
             $BASE_PYTHON << EOF
             import os
             import subprocess
-            package_dir = f'{os.environ["ARTIFACTS_DIR"]}/packages'
+            package_dir = f'{os.environ["SD_ARTIFACTS_DIR"]}/packages'
             for package in os.listdir(package_dir):
                 print(f'Checking package {package!r}', flush=True)
                 subprocess.check_call(['pyroma', package])
