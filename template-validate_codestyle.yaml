@@ -18,6 +18,17 @@ config:
             This step will run unittests using the tox tool
             EOF
     -   display_environment: printenv|sort
+    -   init_os: |
+            if [ -e "/usr/bin/apt-get" ]; then
+                echo "Updating the apt package list"
+                apt-get update
+            fi
+            if [ ! -e "$BASE_PYTHON" ]; then
+                if [ -e "/usr/bin/apt-get" ]; then
+                    echo "Found apt-get, configuring for debian distro"
+                    apt-get install -y ${PYTHON}-venv python3-pip
+                fi
+            fi
     -   setup_environment: |
             export PATH=/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp27-cp27m/bin:$PATH
             if [ "$BASE_PYTHON" = "" ]; then
@@ -26,18 +37,6 @@ config:
             export BINDIR="`dirname ${BASE_PYTHON}`"
             if [ "$BINDIR" != "" ]; then
                 export PATH="${BINDIR}:${PATH}"
-            fi
-    -   init_os: |
-            PYTHON=`basename $BASE_PYTHON|sed "s/\.//"`
-            if [ -e "/usr/bin/apt-get" ]; then
-                echo "Updating the apt package list"
-                apt-get update
-            fi
-            if [ ! -e "$BASE_PYTHON" ]; then
-                if [ -e "/usr/bin/apt-get" ]; then
-                    echo "Found apt-get, configuring for debian distro"
-                    apt-get install -y ${PYTHON} ${PYTHON}-venv python3-pip
-                fi
             fi
     -   install_pylint: |
             VALID_VENV="$SD_SOURCE_DIR/pylintvenv"
