@@ -52,5 +52,5 @@ config:
             if [ -e "$OUTPUT_DIR" ]; then
                 mkdir -p "$OUTPUT_DIR"
             fi
-            $VALID_VENV/bin/pylint --output-format=parseable $PACKAGE_DIR | tee "$OUTPUT_DIR/pylint.txt"
+            $VALID_VENV/bin/pylint --output-format=parseable $PACKAGE_DIR
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
