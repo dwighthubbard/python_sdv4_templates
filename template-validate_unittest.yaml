@@ -32,14 +32,13 @@ config:
             if [ -e "/usr/bin/apt-get" ]; then
                 echo "Updating the apt package list"
                 apt-get update
-                apt-get install -y python3 python3-venv python3-pip python3.6-venv python3.7-venv python3.8-venv
+                apt-get install -y python3 python3-venv python3-pip
+                apt-get install -y python3.6-venv || /bin/true
+                apt-get install -y python3.7-venv || /bin/true
+                apt-get install -y python3.8-venv || /bin/true
             fi
             if [ ! -e "$BASE_PYTHON" ]; then
-                if [ -e "/usr/bin/apt-get" ]; then
-                    echo "Found apt-get, configuring for debian distro"
-                    apt-get update && apt-get upgrade -y
-                    apt-get install -y python3 python3-venv python3-pip python3.6-venv python3.7-venv python3.8-venv
-                fi
+                BASE_PYTHON="`which python3`"
             fi
     -   install_tox: $BASE_PYTHON -m pip install tox
     -   update_version: echo "Update version"
