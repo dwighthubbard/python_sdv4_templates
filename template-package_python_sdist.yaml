@@ -37,7 +37,7 @@ config:
             fi
     -   install_utiliity: |
             if [ ! -e "$BINDIR/wheel" ]; then
-                $BASE_PYTHON -m pip install setuptools wheel
+                $BASE_PYTHON -m pip install setuptools wheel pyroma
             fi
     -   update_version: |
             $BASE_PYTHON << EOF
@@ -66,4 +66,13 @@ config:
                 mkdir -p "$SD_ARTIFACTS_DIR/packages"
             fi
             cp dist/* "$SD_ARTIFACTS_DIR/packages" 
+    -   check_packages: |
+            $BASE_PYTHON << EOF
+            import os
+            import subprocess
+            package_dir = f'{os.environ["ARTIFACTS_DIR"]}/packages'
+            for package in os.listdir(package_dir):
+                print(f'Checking package {package!r}', flush=True)
+                subprocess.check_call(['pyroma', package])
+            EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
