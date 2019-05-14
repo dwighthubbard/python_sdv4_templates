@@ -48,5 +48,9 @@ config:
             if [ -z "$PACKAGE_DIR"  ]; then
                 PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
             fi
-            $VALID_VENV/bin/pylint --output-format=parseable $PACKAGE_DIR
+            OUTPUT_DIR="$SD_ARTIFACTS_DIR/reports/pylint"
+            if [ -e "$OUTPUT_DIR" ]; then
+                mkdir -p "$OUTPUT_DIR"
+            fi
+            $VALID_VENV/bin/pylint --output-format=parseable $PACKAGE_DIR | tee "$OUTPUT_DIR/pylint.txt"
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
