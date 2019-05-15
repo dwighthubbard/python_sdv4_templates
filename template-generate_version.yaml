@@ -55,7 +55,7 @@ config:
             version_split[-1] = os.environ['SD_BUILD_ID']
             version = '.'.join(version_split)
             print(f'New version: {version}')
-            subprocess.call(['meta', 'set', 'package.version', version]) 
+            subprocess.check_call(['meta', 'set', 'package.version', version]) 
             EOF
             
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
