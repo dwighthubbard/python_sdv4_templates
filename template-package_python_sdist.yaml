@@ -1,8 +1,6 @@
 namespace: python
 name: package_python_sdist
 description: Package the application as an sdist package
-long_description = file:README.md
-long_description_content_type = text/markdown
 version: 1.0.0
 maintainer: python-devel@oath.com
 config:
