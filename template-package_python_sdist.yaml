@@ -46,6 +46,9 @@ config:
             
             version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
             
+            if version == 'null':
+                print('Unable to fetch package.version from the ci pipeline metadata', flush=True)
+                sys.exit(0)
             print(f'Version set to {version}')
             parser = ConfigParser()
             with open('setup.cfg') as fh:
