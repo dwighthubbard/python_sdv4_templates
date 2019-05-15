@@ -71,6 +71,6 @@ config:
             package_dir = f'{os.environ["SD_ARTIFACTS_DIR"]}/packages'
             for package in os.listdir(package_dir):
                 print(f'Checking package {package!r}', flush=True)
-                subprocess.check_call(['pyroma', package])
+                subprocess.check_call(['pyroma', os.path.join(package_dir, package)])
             EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
