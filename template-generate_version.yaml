@@ -5,8 +5,8 @@ version: 1.0.0
 maintainer: python-devel@oath.com
 config:
     # image: quay.io/pypa/manylinux2010_x86_64
-    # image: ubuntu:19.04
-    image: alpine
+    image: ubuntu:19.04
+    # image: alpine
     environment:
         BASE_PYTHON: ''
         GIT_SHALLOW_CLONE: false
