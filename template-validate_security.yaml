@@ -1,0 +1,56 @@
+namespace: python
+name: validate_security
+description: Run python security analysis using the bandit tool
+version: 2019.516.05106
+maintainer: 54983+dwighthubbard@users.noreply.github.com
+config:
+    image: ubuntu:latest
+    environment:
+        BASE_PYTHON: /usr/bin/python3
+        GIT_SHALLOW_CLONE: false
+        LANG: en_US.UTF-8
+        TEST_RUNNER: pytest
+        TOX_ARGS: ''
+        TOX_ENVLIST: py36,py37,py38
+        SECURITY_CHECK_ENFORCING: 'True'
+        PACKAGE_DIRECTORY: src
+        SECURITY_REPORT_FORMAT: yaml,txt
+        SECURITY_BANDIT_CONFIG_ARGS: ''
+    settings: {}
+    steps:
+    -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
+    -   motd: |
+            cat << EOF
+            Run python security analysis using the bandit tool
+            EOF
+    -   display_environment: printenv|sort
+    -   init_os: |
+            PYTHON=`basename $BASE_PYTHON`
+            if [ -e "/usr/bin/apt-get" ]; then
+                echo "Updating the apt package list"
+                apt-get update
+            fi
+            if [ ! -e "$BASE_PYTHON" ]; then
+                if [ -e "/usr/bin/apt-get" ]; then
+                    echo "Found apt-get, configuring for debian distro"
+                    apt-get install -y python3 python3-venv python3-pip
+                    if [ "$PYTHON" != "" ]; then
+                        apt-get install -y ${PYTHON} ${PYTHON}-venv ${PYTHON}-pip
+                    fi
+                fi
+                BASE_PYTHON="`which python3`"
+            fi
+    -   setup_environment: |
+            export BINDIR="`dirname ${BASE_PYTHON}`"
+            export PATH="${BINDIR}:/opt/python/bin:${PATH}"
+    -   install_pypirun: echo "Code to install pypirun utility goes here"
+    -   configure_pip: echo "Add pip configuration commands here"
+    -   install_utility: ${BASE_PYTHON} -m pip install bandit
+    -   install_dependencies: echo "OS Dependency install command goes here"
+    -   bandit_config: bandit-config-generator -o .bandit.ini ${SECURITY_BANDIT_CONFIG_ARGS}
+    -   init: echo "Command to initialize screwdriver operations goes here"
+    -   update_version: echo "Command to update the package version goes here"
+    -   validate_code: bandit -c .bandit.ini -f txt -r ${PACKAGE_DIRECTORY}
+    -   store_artifacts: sudo cp -r artifacts/* ${ARTIFACTS_DIR}
+    -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
+    
