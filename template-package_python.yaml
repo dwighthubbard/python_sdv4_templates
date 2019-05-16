@@ -1,5 +1,5 @@
 namespace: python
-name: package_python_sdist
+name: package_python
 description: Package the application as an sdist package
 version: 1.0.0
 maintainer: python-devel@oath.com
@@ -90,19 +90,20 @@ config:
             import subprocess
             import sys
             if os.environ['PUBLISH'].lower() not in ['true', '1', 'on']:
+                print('Publish is disabled, skipping publish operation')
                 sys.exit(0)
             user = os.environ.get('PYPI_USER', None)
             password = os.environ.get('PYPI_PASSWORD', None)
             if not user:
                 print('Unable to publish to PYPI, PYPI_USER secret is not set', flush=True)
                 sys.exit(1)
-            if not user:
+            if not password:
                 print('Unable to publish to PYPI, PYPI_PASSWORD secret is not set', flush=True)
                 sys.exit(1)
             os.environ['TWINE_USER'] = user
             os.environ['TWINE_PASSWORD'] = password
             for filename in os.listdir('dist'):
                 print(f'Uploading {filename}', flush=True)
-                subprocess.check_call(['twine', 'upload', '--repository-url', os.environ['PYPI_REPOSITORY_URL'], os.path.join(dist, filename)])
+                subprocess.check_call(['twine', 'upload', '--repository-url', os.environ['PYPI_REPOSITORY_URL'], os.path.join('dist', filename)])
             EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
