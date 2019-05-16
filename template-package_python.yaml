@@ -102,6 +102,6 @@ config:
             os.environ['TWINE_PASSWORD'] = password
             for filename in os.listdir('dist'):
                 print(f'Uploading {filename}', flush=True)
-                subprocess.check_call(['twine', 'upload', '--repository-url', os.environ['PYPI_REPOSITORY_URL'], os.path.join('dist', filename)])
+                subprocess.check_call(['twine', 'upload', '--repository-url', os.environ['PYPI_REPOSITORY_URL'], os.path.join('dist', filename)], env={'TWINE_USER': user, 'TWINE_PASSWORD': password})
             EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
