@@ -51,6 +51,5 @@ config:
     -   init: echo "Command to initialize screwdriver operations goes here"
     -   update_version: echo "Command to update the package version goes here"
     -   validate_code: bandit -c .bandit.ini -f txt -r ${PACKAGE_DIRECTORY}
-    -   store_artifacts: cp -r artifacts/* ${SD_ARTIFACTS_DIR}
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
     
