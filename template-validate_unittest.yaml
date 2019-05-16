@@ -13,6 +13,8 @@ config:
         TEST_RUNNER: pytest
         TOX_ARGS: ''
         TOX_ENVLIST: py36,py37,py38
+    secrets:
+        - CODECOV_TOKEN
     steps:
     -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
     -   motd: |
