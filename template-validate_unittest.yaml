@@ -28,7 +28,6 @@ config:
                 export PATH="${BINDIR}:${PATH}"
             fi
     -   init_os: |
-            PYTHON=`basename $BASE_PYTHON|sed "s/\.//"`
             if [ -e "/usr/bin/apt-get" ]; then
                 echo "Updating the apt package list"
                 apt-get update
