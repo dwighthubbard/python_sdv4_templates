@@ -39,9 +39,7 @@ config:
                 export PATH="${BINDIR}:${PATH}"
             fi    
     -   install_utiliity: |
-            if [ ! -e "$BINDIR/wheel" ]; then
-                $BASE_PYTHON -m pip install setuptools wheel pyroma twine
-            fi
+            $BASE_PYTHON -m pip install setuptools wheel pyroma twine
     -   update_version: |
             $BASE_PYTHON << EOF
             from configparser import ConfigParser
