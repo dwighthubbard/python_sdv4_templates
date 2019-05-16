@@ -4,9 +4,9 @@ description: Run python security analysis using the bandit tool
 version: 2019.516.05106
 maintainer: 54983+dwighthubbard@users.noreply.github.com
 config:
-    image: ubuntu:latest
+    image: quay.io/pypa/manylinux2010_x86_64
     environment:
-        BASE_PYTHON: /usr/bin/python3
+        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
         TEST_RUNNER: pytest
