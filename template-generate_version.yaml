@@ -19,7 +19,7 @@ config:
             EOF
     -   display_environment: printenv|sort
     -   init_os: |
-            if [ -e "$BASE_PYTHON" ]; then
+            if [ ! -e "$BASE_PYTHON" ]; then
                 if [ -e "/usr/bin/apt-get" ]; then
                     echo "Updating the apt package list"
                     apt-get update
