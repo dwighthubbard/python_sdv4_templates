@@ -4,11 +4,10 @@ description: Run the unittest using the tox tool
 version: 1.0.0
 maintainer: python-devel@oath.com
 config:
-    #image: quay.io/pypa/manylinux2010_x86_64
-    image: ubuntu:19.04
+    image: quay.io/pypa/manylinux2010_x86_64
+    # image: ubuntu:19.04
     environment:
-        # BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
-        BASE_PYTHON: /usr/bin/python3
+        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
         TEST_RUNNER: pytest
