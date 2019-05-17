@@ -101,9 +101,14 @@ config:
                 sys.exit(1)
             os.environ['TWINE_USER'] = user
             os.environ['TWINE_PASSWORD'] = password
+            bindir = os.path.dirname(sys.executable)
+            twine_cmd = os.path.join(bindir, 'twine')
+            if not os.path.exists(twine_cmd):
+                print('The twine command is missing', flush=True)
+                sys.exit(1)
             for filename in os.listdir('dist'):
                 print(f'Uploading {filename}', flush=True)
-                command = ['twine', 'upload', '--repository-url', os.environ['PYPI_REPOSITORY_URL'], os.path.join('dist', filename)]
+                command = [twine_cmd, 'upload', '--repository-url', os.environ['PYPI_REPOSITORY_URL'], os.path.join('dist', filename)]
                 print(f'Running: {" ".join(command)}')
                 subprocess.check_call(command, env={'TWINE_USER': user, 'TWINE_PASSWORD': password})
             EOF
