@@ -45,7 +45,7 @@ config:
     -   validate_code: tox $TOX_ARGS
     -   codecov: |
             if [ "$CODECOV_TOKEN" != "" ]; then
-                $BASE_PYTHON -m pip install codecov
+                $BASE_PYTHON -m pip install codecov .[test]
                 codecov
             fi
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
