@@ -99,10 +99,11 @@ config:
             if not password:
                 print('Unable to publish to PYPI, PYPI_PASSWORD secret is not set', flush=True)
                 sys.exit(1)
-            os.environ['TWINE_USER'] = user
+            os.environ['TWINE_USERNAME'] = user
             os.environ['TWINE_PASSWORD'] = password
             bindir = os.path.dirname(sys.executable)
             twine_cmd = os.path.join(bindir, 'twine')
+            twine_env = {'TWINE_USERNAME': user, 'TWINE_PASSWORD': password}
             if not os.path.exists(twine_cmd):
                 print('The twine command is missing', flush=True)
                 sys.exit(1)
@@ -110,6 +111,6 @@ config:
                 print(f'Uploading {filename}', flush=True)
                 command = [twine_cmd, 'upload', '--repository-url', os.environ['PYPI_REPOSITORY_URL'], os.path.join('dist', filename)]
                 print(f'Running: {" ".join(command)}')
-                subprocess.check_call(command, env={'TWINE_USER': user, 'TWINE_PASSWORD': password})
+                subprocess.check_call(command)
             EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
