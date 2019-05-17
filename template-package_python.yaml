@@ -11,7 +11,7 @@ config:
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
         PUBLISH: false
-        PYPI_REPOSITORY_URL: https://pypi.org/legacy/
+        TWINE_REPOSITORY_URL: https://pypi.org/legacy/
         SETUP_ARGS: ''
     secrets:
         - PYPI_USER
@@ -109,8 +109,12 @@ config:
                 sys.exit(1)
             for filename in os.listdir('dist'):
                 print(f'Uploading {filename}', flush=True)
-                command = [twine_cmd, 'upload', '--repository-url', os.environ['PYPI_REPOSITORY_URL'], os.path.join('dist', filename)]
+                command = [twine_cmd, 'upload', '--verbose', os.path.join('dist', filename)]
                 print(f'Running: {" ".join(command)}')
-                subprocess.check_call(command)
+                try:
+                    subprocess.check_call(command)
+                except subprocess.CalledProcessError as error:
+                    print(f'Upload of package file {filename!r} failed', flush=True)
+                    sys.exit(error.returncode)
             EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
