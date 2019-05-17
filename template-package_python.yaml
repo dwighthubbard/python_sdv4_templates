@@ -11,7 +11,7 @@ config:
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
         PUBLISH: false
-        TWINE_REPOSITORY_URL: https://pypi.org/legacy/
+        TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
         SETUP_ARGS: ''
     secrets:
         - PYPI_USER
