@@ -39,7 +39,8 @@ config:
                 export PATH="${BINDIR}:${PATH}"
             fi    
     -   install_utiliity: |
-            $BASE_PYTHON -m pip install setuptools wheel pyroma twine
+            $BASE_PYTHON -m pip install setuptools wheel 
+            $BASE_PYTHON -m pip install pyroma twine
     -   update_version: |
             $BASE_PYTHON << EOF
             from configparser import ConfigParser
@@ -102,6 +103,8 @@ config:
             os.environ['TWINE_PASSWORD'] = password
             for filename in os.listdir('dist'):
                 print(f'Uploading {filename}', flush=True)
-                subprocess.check_call(['twine', 'upload', '--repository-url', os.environ['PYPI_REPOSITORY_URL'], os.path.join('dist', filename)], env={'TWINE_USER': user, 'TWINE_PASSWORD': password})
+                command = ['twine', 'upload', '--repository-url', os.environ['PYPI_REPOSITORY_URL'], os.path.join('dist', filename)]
+                print(f'Running: {" ".join(command)}')
+                subprocess.check_call(command, env={'TWINE_USER': user, 'TWINE_PASSWORD': password})
             EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
