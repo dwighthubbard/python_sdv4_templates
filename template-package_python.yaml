@@ -16,6 +16,8 @@ config:
     secrets:
         - PYPI_USER
         - PYPI_PASSWORD
+        - TEST_PYPI_USER
+        - TEST_PYPI_PASSWORD
     steps:
     -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
     -   motd: |
@@ -93,6 +95,10 @@ config:
                 sys.exit(0)
             user = os.environ.get('PYPI_USER', None)
             password = os.environ.get('PYPI_PASSWORD', None)
+            if 'test.pypi.org' in os.environ['TWINE_REPOSITORY_URL']:
+                user = os.environ.get('TEST_PYPI_USER', None)
+                password = os.environ.get('TEST_PYPI_PASSWORD', None)
+                
             if not user:
                 print('Unable to publish to PYPI, PYPI_USER secret is not set', flush=True)
                 sys.exit(1)
