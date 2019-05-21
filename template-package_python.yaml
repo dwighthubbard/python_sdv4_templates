@@ -40,6 +40,13 @@ config:
             if [ "$BINDIR" != "" ]; then
                 export PATH="${BINDIR}:${PATH}"
             fi    
+    -   environment_keys: |
+            $BASE_PYTHON << EOF
+            import os
+            keys = list(os.environ.keys())
+            keys.sort()
+            print(', '.join(keys))
+            EOF
     -   install_utiliity: |
             $BASE_PYTHON -m pip install setuptools wheel 
             $BASE_PYTHON -m pip install pyroma twine
