@@ -12,6 +12,7 @@ config:
         LANG: en_US.UTF-8
         PUBLISH: false
         TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
+        PYROMA_MIN_SCORE: 8
         SETUP_ARGS: ''
     secrets:
         - PYPI_USER
@@ -82,7 +83,7 @@ config:
                 if package.endswith('.whl'):
                     continue
                 print(f'Checking package {package!r}', flush=True)
-                subprocess.check_call(['pyroma', os.path.join(package_dir, package)])
+                subprocess.check_call(['pyroma', f'--min={os.environ["PYROMA_MIN_SCORE"]}', os.path.join(package_dir, package)])
             EOF
     -   publish_packages: |
             $BASE_PYTHON << EOF
