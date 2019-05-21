@@ -86,23 +86,23 @@ config:
             EOF
     -   publish_packages: |
             $BASE_PYTHON << EOF
-            import os
-            import subprocess
-            import sys
+            import os, subprocess, sys
             if os.environ['PUBLISH'].lower() not in ['true', '1', 'on']:
-                print('Publish is disabled, skipping publish operation')
+                print('Publish is disabled, skipping publish operation', flush=True)
                 sys.exit(0)
-            user = os.environ.get('PYPI_USER', None)
-            password = os.environ.get('PYPI_PASSWORD', None)
             if 'test.pypi.org' in os.environ['TWINE_REPOSITORY_URL']:
+                print('Using test.pypi.org endpoint, getting user from TEST_PYPI_USER secret and password from TEST_PYPI_PASSWORD secret', flush=True)
                 user = os.environ.get('TEST_PYPI_USER', None)
                 password = os.environ.get('TEST_PYPI_PASSWORD', None)
-                
+            else:
+                print('Using pypi.org endpoint, getting user from PYPI_USER secret and password from PYPI_PASSWORD secret', flush=True)
+                user = os.environ.get('PYPI_USER', None)
+                password = os.environ.get('PYPI_PASSWORD', None)
             if not user:
-                print('Unable to publish to PYPI, PYPI_USER secret is not set', flush=True)
+                print('Unable to publish to PYPI, user secret is not set', flush=True)
                 sys.exit(1)
             if not password:
-                print('Unable to publish to PYPI, PYPI_PASSWORD secret is not set', flush=True)
+                print('Unable to publish to PYPI, password secret is not set', flush=True)
                 sys.exit(1)
             os.environ['TWINE_USERNAME'] = user
             os.environ['TWINE_PASSWORD'] = password
