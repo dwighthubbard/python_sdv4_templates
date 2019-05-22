@@ -86,7 +86,7 @@ config:
                     command += pytest_args
                 command.append(test_dir)
 
-                print(f'Running test command: {" ".join(command()}')
+                print(f'Running test command: {" ".join(command)}')
                 rc = 0
                 try:
                     subprocess.check_call(command)
