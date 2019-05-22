@@ -11,6 +11,7 @@ config:
         LANG: en_US.UTF-8
         PYPI_INDEX_URL: https://pypi.org/simple
         PYTEST_ARGS: ''
+        UPLOAD_TIMEOUT_SECS: 15
     settings: {}
     steps:
     -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
