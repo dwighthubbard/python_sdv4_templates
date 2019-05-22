@@ -1,0 +1,90 @@
+namespace: python
+name: validate_pypi_package
+description: Run tests against the package published to the package repository
+version: 2019.522.02403
+maintainer: 54983+dwighthubbard@users.noreply.github.com
+config:
+    image: quay.io/pypa/manylinux2010_x86_64
+    environment:
+        BASE_PYTHON: /usr/bin/python3
+        GIT_SHALLOW_CLONE: false
+        LANG: en_US.UTF-8
+        PYPI_INDEX_URL: https://pypi.org/simple
+        PYTEST_ARGS: ''
+    settings: {}
+    steps:
+    -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
+    -   motd: |
+            cat << EOF
+            Run tests against the package published to the package repository
+            EOF
+    -   display_environment: printenv|sort
+    -   init_os: |
+            PYTHON=`basename $BASE_PYTHON`
+            if [ -e "/usr/bin/apt-get" ]; then
+                echo "Updating the apt package list"
+                apt-get update
+            fi
+            if [ ! -e "$BASE_PYTHON" ]; then
+                if [ -e "/usr/bin/apt-get" ]; then
+                    echo "Found apt-get, configuring for debian distro"
+                    apt-get install -y python3 python3-venv python3-pip
+                    if [ "$PYTHON" != "" ]; then
+                        apt-get install -y ${PYTHON} ${PYTHON}-venv ${PYTHON}-pip
+                    fi
+                fi
+                BASE_PYTHON="`which python3`"
+            fi
+    -   setup_environment: |
+            export BINDIR="`dirname ${BASE_PYTHON}`"
+            export PATH="${BINDIR}:/opt/python/bin:${PATH}"
+    -   install_pypirun: echo "Code to install pypirun utility goes here"
+    -   configure_pip: echo "Add pip configuration commands here"
+    -   install_dependencies: echo "OS Dependency install command goes here"
+    -   init: echo "Command to initialize screwdriver operations goes here"
+    -   update_version: echo "Command to update the package version goes here"
+    -   validate_code: |
+            $BASE_PYTHON << EOF
+            from configparser import ConfigParser
+            import os, shlex, subprocess, sys, tempfile
+
+            cwd = os.getcwd()
+            pypi_index = os.environ.get('PYPI_INDEX_URL', 'https://pypi.org/simple')
+            version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
+            pytest_args = shlex.split(os.environ.get('PYTEST_ARGS', ''))
+            test_dir os.path.join(cwd, 'tests/')
+
+            parser = ConfigParser()
+            parser.read('setup.cfg')
+            package_name = parser['metadata']['name']
+            install_requires = [ _.strip() for _ in parser['options']['install_requires'].strip().split(os.linesep)]
+
+            with tempfile.TemporaryDirectory() as tempdir:
+                subprocess.check_call([sys.executable, '-m', 'venv', tempdir])
+                venv_pip = os.path.join(tempdir, 'bin/pip')
+                venv_pytest = os.path.join(tempdir, 'bin/pytest')
+
+                subprocess.check_call([venv_pip, 'install', 'pytest'])
+
+                if install_requires:
+                    print('Installing dependencies from production pypi')
+                    subprocess.check_call([venv_pip, 'install'] + install_requires)
+
+                subprocess.check_call([venv_pip, 'install', '-i', pypi_index, f'{package_name}=={version}'])
+
+                os.chdir(tempdir)
+                command = venv_pytest
+                if pytest_args:
+                    command += pytest_args
+                command.append(test_dir)
+
+                rc = 0
+                try:
+                    subprocess.check_call(command)
+                except subprocess.CalledProcessError as error:
+                    rc = error.returncode
+                os.chdir(cwd)
+            sys.exit(rc)
+            EOF
+    -   store_artifacts: sudo cp -r artifacts/* ${ARTIFACTS_DIR}
+    -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
