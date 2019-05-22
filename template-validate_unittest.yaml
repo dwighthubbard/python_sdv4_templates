@@ -7,7 +7,7 @@ images:
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
     ubuntu: ubuntu:latest
 config:
-    image: maylinux2010
+    image: manylinux2010
     environment:
         BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
         GIT_SHALLOW_CLONE: false
