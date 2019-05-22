@@ -41,11 +41,11 @@ config:
             if [ ! -e "$BASE_PYTHON" ]; then
                 BASE_PYTHON="`which python3`"
             fi
-    -   install_tox: $BASE_PYTHON -m pip install tox
-    -   update_version: echo "Update version"
-    -   validate_code: |
+    -   install_utility: |
             $BASE_PYTHON -m venv /tmp/safetydbvenv
-            /tmp/safetydbvenv/bin/pip install safety .
+            /tmp/safetydbvenv/bin/pip install safety
+    -   update_version: echo "Update version"
+    -   install_app: /tmp/safetydbvenv/bin/pip install .
+    -   validate_code: |
             /tmp/safetydbvenv/bin/safety check
     - end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
-    
