@@ -46,19 +46,18 @@ config:
     -   validate_code: |
             $BASE_PYTHON << EOF
             from configparser import ConfigParser
-            import os, shlex, subprocess, sys, tempfile
-
+            import datetime, os, shlex, subprocess, sys, tempfile, time
             cwd = os.getcwd()
             pypi_index = os.environ.get('PYPI_INDEX_URL', 'https://pypi.org/simple')
             version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
             pytest_args = shlex.split(os.environ.get('PYTEST_ARGS', ''))
             test_dir = os.path.join(cwd, 'tests/')
-
+            timeout_secs = int(os.environ.get('UPLOAD_TIMEOUT_SECS', 30))
+            timeout_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout_secs)
             parser = ConfigParser()
             parser.read('setup.cfg')
             package_name = parser['metadata']['name']
             install_requires = [ _.strip() for _ in parser['options']['install_requires'].strip().split(os.linesep)]
-
             with tempfile.TemporaryDirectory() as tempdir:
                 subprocess.check_call([sys.executable, '-m', 'venv', tempdir])
                 venv_pip = os.path.join(tempdir, 'bin/pip')
@@ -69,9 +68,12 @@ config:
                 if install_requires:
                     print('Installing dependencies from production pypi')
                     subprocess.check_call([venv_pip, 'install'] + install_requires)
-
-                subprocess.check_call([venv_pip, 'install', '-i', pypi_index, f'{package_name}=={version}'])
-
+                while datetime.datetime.now() < timeout_time:
+                    try:
+                        subprocess.check_call([venv_pip, 'install', '-i', pypi_index, f'{package_name}=={version}'])
+                        break
+                    except subprocess.CalledProcessError:
+                        time.sleep(5)
                 os.chdir(tempdir)
                 command = [venv_pytest]
                 if pytest_args:
