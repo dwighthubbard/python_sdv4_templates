@@ -73,7 +73,7 @@ config:
                 subprocess.check_call([venv_pip, 'install', '-i', pypi_index, f'{package_name}=={version}'])
 
                 os.chdir(tempdir)
-                command = venv_pytest
+                command = [venv_pytest]
                 if pytest_args:
                     command += pytest_args
                 command.append(test_dir)
