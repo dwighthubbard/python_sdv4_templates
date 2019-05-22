@@ -1,10 +1,13 @@
 namespace: python
 name: validate_pypi_package
 description: Run tests against the package published to the package repository
+images:
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    ubuntu: ubuntu:latest
 version: 2019.522.02403
 maintainer: 54983+dwighthubbard@users.noreply.github.com
 config:
-    image: quay.io/pypa/manylinux2010_x86_64
+    image: manylinux2010
     environment:
         BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
         GIT_SHALLOW_CLONE: false
