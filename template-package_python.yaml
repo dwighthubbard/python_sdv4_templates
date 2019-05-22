@@ -47,7 +47,7 @@ config:
             keys.sort()
             print(', '.join(keys))
             EOF
-    -   install_utiliity: |
+    -   install_utility: |
             $BASE_PYTHON -m pip install setuptools wheel 
             $BASE_PYTHON -m pip install pyroma twine
     -   update_version: |
