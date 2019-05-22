@@ -71,7 +71,7 @@ config:
                     subprocess.check_call([venv_pip, 'install'] + install_requires)
                 while datetime.datetime.now() < timeout_time:
                     try:
-                        command = [venv_pip, 'install', '-i', pypi_index, f'{package_name}=={version}[test]']
+                        command = [venv_pip, 'install', '-q', '-i', pypi_index, f'{package_name}=={version}[test]']
                         print(f'Trying to install package package using command {" ".join(command)}', flush=True)
                         subprocess.check_call(command)
                         break
