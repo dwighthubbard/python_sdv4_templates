@@ -86,5 +86,5 @@ config:
                 os.chdir(cwd)
             sys.exit(rc)
             EOF
-    -   store_artifacts: sudo cp -r artifacts/* ${ARTIFACTS_DIR}
+    -   store_artifacts: echo "This template does not currently generate artifacts"
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
