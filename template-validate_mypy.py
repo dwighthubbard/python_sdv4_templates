@@ -1,10 +1,13 @@
 namespace: python
-name: validate_mypy
+name: validate_type
 description: Run the mypy type validator
+images:
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    ubuntu: ubuntu:latest
 version: 1.0.0
 maintainer: python-devel@oath.com
 config:
-    image: quay.io/pypa/manylinux2010_x86_64
+    image: manylinux2010
     environment:
         BASE_PYTHON: ""
         PACKAGE_DIR: ""
