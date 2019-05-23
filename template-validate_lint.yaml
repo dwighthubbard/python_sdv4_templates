@@ -54,5 +54,4 @@ config:
             fi
             # $VALID_VENV/bin/pylint --output-format=parseable $PACKAGE_DIR
             $VALID_VENV/bin/pylint -r n --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" $PACKAGE_DIR| tee $SD_ARTIFACTS_DIR/pylint.txt
-    -   disable_sonarqube: rm sonar-project.properties || true
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
