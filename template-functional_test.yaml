@@ -70,7 +70,7 @@ config:
                 venv_pip = os.path.join(tempdir, 'bin/pip')
                 venv_pytest = os.path.join(tempdir, 'bin/pytest')
 
-                subprocess.check_call([venv_pip, 'install', 'pytest'])
+                subprocess.check_call([venv_pip, 'install', '-q', 'pytest'])
                 if install_requires:
                     print('Installing dependencies from production pypi')
                     subprocess.check_call([venv_pip, 'install', '-q'] + install_requires)
@@ -80,13 +80,16 @@ config:
                 timeout_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout_secs)
                 while datetime.datetime.now() < timeout_time:
                     try:
-                        command = [venv_pip, 'install', '-q', '-i', pypi_index, f'{package_name}=={version}[test]']
+                        command = [venv_pip, 'install', '-q', '-i', pypi_index, f'{package_name}=={version}']
                         print(f'Trying to install package package using command {" ".join(command)}', flush=True)
                         subprocess.check_call(command)
                         break
                     except subprocess.CalledProcessError:
                         time.sleep(5)
                 os.chdir(tempdir)
+                print('Installed packages', flush=True)
+                subprocess.call([venv_pip, 'freeze'])
+                
                 command = [venv_pytest]
                 if pytest_args:
                     command += pytest_args
