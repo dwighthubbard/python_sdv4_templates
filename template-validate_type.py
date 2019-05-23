@@ -49,6 +49,6 @@ config:
             if [ -z "$PACKAGE_DIR"  ]; then
                 PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
             fi
-            $BIN_DIR/mypy $PACKAGE_DIR
+            $BINDIR/mypy $PACKAGE_DIR
     -   disable_sonarqube: rm sonar-project.properties || true  
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
