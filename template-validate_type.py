@@ -46,9 +46,7 @@ config:
             $BASE_PYTHON -m pip install .[mypy]
     -   update_version: echo "Update version"
     -   validate_code: |
-            if [ -z "$PACKAGE_DIR"  ]; then
-                PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
-            fi
-            $BINDIR/mypy $PACKAGE_DIR
+            PACKAGE_NAME="`$BASE_PYTHON setup.py --name`"
+            $BINDIR/mypy $PACKAGE_NAME
     -   disable_sonarqube: rm sonar-project.properties || true  
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
