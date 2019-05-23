@@ -48,4 +48,5 @@ config:
     -   install_app: /tmp/safetydbvenv/bin/pip install .
     -   validate_code: |
             /tmp/safetydbvenv/bin/safety check
-    - end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
+    -   disable_sonarqube: rm sonar-project.properties || true  
+    -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
