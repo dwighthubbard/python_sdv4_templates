@@ -61,6 +61,10 @@ config:
             parser = ConfigParser()
             parser.read('setup.cfg')
             package_name = parser['metadata']['name']
+            try:
+                test_requires = [ _.strip() for _ in parser['options.extras_require']['test'].strip().split(os.linesep)]
+            except KeyError:
+                test_requires = []
             install_requires = [ _.strip() for _ in parser['options']['install_requires'].strip().split(os.linesep)]
             with tempfile.TemporaryDirectory() as tempdir:
                 subprocess.check_call([sys.executable, '-m', 'venv', tempdir])
@@ -68,10 +72,12 @@ config:
                 venv_pytest = os.path.join(tempdir, 'bin/pytest')
 
                 subprocess.check_call([venv_pip, 'install', 'pytest'])
-
                 if install_requires:
                     print('Installing dependencies from production pypi')
                     subprocess.check_call([venv_pip, 'install'] + install_requires)
+                if test_requires:
+                    print('Installing test dependencies from production pypi')
+                    subprocess.check_call([venv_pip, 'install'] + test_requires)
                 while datetime.datetime.now() < timeout_time:
                     try:
                         command = [venv_pip, 'install', '-q', '-i', pypi_index, f'{package_name}=={version}[test]']
