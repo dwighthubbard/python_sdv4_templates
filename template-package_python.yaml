@@ -131,4 +131,5 @@ config:
                     print(f'Upload of package file {filename!r} failed', flush=True)
                     sys.exit(error.returncode)
             EOF
+    -   disable_sonarqube: rm sonar-project.properties || true  
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
