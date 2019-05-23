@@ -57,5 +57,5 @@ config:
             print(f'New version: {version}')
             subprocess.check_call(['meta', 'set', 'package.version', version]) 
             EOF
-            
+    -   disable_sonarqube: rm sonar-project.properties || true  
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
