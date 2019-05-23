@@ -51,5 +51,6 @@ config:
     -   init: echo "Command to initialize screwdriver operations goes here"
     -   update_version: echo "Command to update the package version goes here"
     -   validate_code: bandit -c .bandit.ini -f txt -r ${PACKAGE_DIRECTORY}
+    -   disable_sonarqube: rm sonar-project.properties || true  
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
     
