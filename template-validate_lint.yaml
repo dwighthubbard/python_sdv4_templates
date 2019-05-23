@@ -53,4 +53,5 @@ config:
                 mkdir -p "$OUTPUT_DIR"
             fi
             $VALID_VENV/bin/pylint --output-format=parseable $PACKAGE_DIR
+    -   disable_sonarqube: rm sonar-project.properties || true
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
