@@ -57,7 +57,6 @@ config:
             pytest_args = shlex.split(os.environ.get('PYTEST_ARGS', ''))
             test_dir = os.path.join(cwd, 'tests/')
             timeout_secs = int(os.environ.get('UPLOAD_TIMEOUT_SECS', 30))
-            timeout_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout_secs)
             parser = ConfigParser()
             parser.read('setup.cfg')
             package_name = parser['metadata']['name']
@@ -74,10 +73,11 @@ config:
                 subprocess.check_call([venv_pip, 'install', 'pytest'])
                 if install_requires:
                     print('Installing dependencies from production pypi')
-                    subprocess.check_call([venv_pip, 'install'] + install_requires)
+                    subprocess.check_call([venv_pip, 'install', '-q'] + install_requires)
                 if test_requires:
                     print('Installing test dependencies from production pypi')
-                    subprocess.check_call([venv_pip, 'install'] + test_requires)
+                    subprocess.check_call([venv_pip, 'install', '-q'] + test_requires)
+                timeout_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout_secs)
                 while datetime.datetime.now() < timeout_time:
                     try:
                         command = [venv_pip, 'install', '-q', '-i', pypi_index, f'{package_name}=={version}[test]']
