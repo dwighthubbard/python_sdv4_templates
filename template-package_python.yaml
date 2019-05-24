@@ -93,21 +93,22 @@ config:
             os.makedirs(package_artifacts, exists_ok=True)
             os.makedirs(build_log_dir, exists_ok=True)
             
+            def run_and_log_output(command, logfile):
+                with open(logfile, 'wb') as fh:
+                    try:
+                        output = subprocess.check_output(command, stderr=subprocess.STDOUT)
+                    except subprocess.CalledProcessError as error:
+                        print(f'Command {command!r} failed', flush=True)
+                        if error.stdout:
+                            print(error.stdout)
+                        sys.exit(error.returncode)
+            
             build_log_dir = os.path.join(
             for package_type in package_types:
                 if package_type == 'sdist':
                     print(f'Building sdist package', flush=True)
-                    log_filename = f'{build_log_dir}/sdist_build.log'
-                    with open(log_filename, 'wb') as fh:
-                        try:
-                            output = subprocess.check_output([sys.executable, 'setup.py', 'sdist'] + setup_args, stderr=subprocess.STDOUT)
-                        except subprocess.CalledProcessError as error:
-                            print(f'Command {sys.executable} setup.py sdist {" ".join(setup_args)} failed', flush=True)
-                            if error.stdout:
-                                print(error.stdout)
+                    run_and_log_output(command=[sys.executable, 'setup.py', 'sdist'] + setup_args, logfile=f'{build_log_dir}/sdist_build.log')
                 elif package_type == 'wheel':
-                    print('Building wheel package(s)', flush=True)
-                    subprocess.check_call([sys.executable, 'setup.py', bdist_wheel] + SETUP_ARGS)
                     if manylinux and plat:
                         print('Generating manylinux wheels', flush=True)
                         os.makedirs('wheelbuild', exists_ok=True)
@@ -115,11 +116,14 @@ config:
                             pip_command = f'/opt/python/{entry}/bin/pip'
                             if os.path.isdir(entry) and os.path.exists(pip_command):
                                 print('Compiling wheel for the /opt/python/{entry}/bin/python interpreter', flush=True)
-                                subprocess.check_call([pip_command, 'wheel', '.', '-w', 'wheelbuild'])
+                                run_and_log_output([pip_command, 'wheel', '.', '-w', 'wheelbuild'], logfile=f'{build_log_dir}/wheel_build_{entry}.log')
                         for wheel in os.listdir('wheelbuild'):
-                            wheel = os.path.join('wheelbuild', wheel)
+                            full_wheel_filename = os.path.join('wheelbuild', wheel)
                             print('Bundling shared libraries for wheel package {wheel!r}', flush=True)
-                            subprocess.check_call(['auditwheel', 'repair', wheel, '--plat', plat, '-w', 'wheelbuild'])
+                            run_and_log_output(['auditwheel', 'repair', full_wheel_filename, '--plat', plat, '-w', 'wheelbuild'], logfile=f'{build_log_dir}/wheel_auditwheel_{wheel}.log')
+                    else:
+                        print('Building wheel package(s)', flush=True)
+                        run_and_log_output([sys.executable, 'setup.py', bdist_wheel] + SETUP_ARGS, logfile=f'{build_log_dir}/wheel_build.log')
             EOF
     -   store_package: |
             if [ ! -e "$SD_ARTIFACTS_DIR/packages" ]; then
