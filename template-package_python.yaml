@@ -114,6 +114,10 @@ config:
                 if package_type == 'sdist':
                     print(f'Building sdist package', flush=True)
                     run_and_log_output(command=[sys.executable, 'setup.py', 'sdist'] + setup_args, logfile=f'{build_log_dir}/sdist_build.log')
+                    if os.path.exists('dist')
+                    for filename in os.listdir('dist'):
+                        print(f'Moving dist/{filename} -> {package_artifacts}/{filename}')
+                        os.rename(f'dist/{filename}', f'{package_artifacts}/{filename}')
                 elif package_type == 'wheel':
                     if manylinux and plat:
                         print('Generating manylinux wheels', flush=True)
@@ -126,9 +130,11 @@ config:
                         for wheel in os.listdir(wheel_build_dir):
                             full_wheel_filename = os.path.join(wheel_build_dir, wheel)
                             if not wheel.startswith(package_name + '-'):
-                                if not wheel.endswith('none-any.whl'):
-                                    print(f'Removing dependency wheel {wheel!r}', flush=True)
-                                    os.remove(full_wheel_filename)
+                                print(f'Removing dependency wheel {wheel!r}', flush=True)
+                                os.remove(full_wheel_filename)
+                                continue
+                            if wheel.endswith('none-any.whl'):
+                                # Not a binary wheel
                                 continue
                             print(f'Bundling shared libraries for wheel package {wheel!r}', flush=True)
                             run_and_log_output(['auditwheel', 'repair', full_wheel_filename, '--plat', plat, '-w', wheel_build_dir], logfile=f'{build_log_dir}/wheel_auditwheel_{wheel}.log')
@@ -136,15 +142,12 @@ config:
                     else:
                         print('Building wheel package(s)', flush=True)
                         run_and_log_output([sys.executable, 'setup.py', bdist_wheel] + SETUP_ARGS, logfile=f'{build_log_dir}/wheel_build.log')
+                    for filename in os.listdir(wheel_build_dir):
+                        print(f'Moving {wheel_build_dir}/{filename} -> {package_artifacts}/{filename}')
+                        os.rename(f'{wheel_build_dir}/{filename}', f'{package_artifacts}/{filename}')
                 print('', flush=True)
             EOF
-    -   store_package: |
-            if [ ! -e "$SD_ARTIFACTS_DIR/packages" ]; then
-                mkdir -p "$SD_ARTIFACTS_DIR/packages"
-            fi
-            cp dist/* "$SD_ARTIFACTS_DIR/packages" || true
-            cp "$SD_ARTIFACTS_DIR/wheelbuild/*" "$SD_ARTIFACTS_DIR/packages" || true
-            # cp wheelbuild/*${AUDITWHEEL_PLAT}*.whl "$SD_ARTIFACTS_DIR/packages" || true
+    -   store_package: echo "storing package"
     -   check_packages: |
             $BASE_PYTHON << EOF
             import os
