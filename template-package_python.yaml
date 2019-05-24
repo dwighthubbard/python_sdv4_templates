@@ -39,6 +39,9 @@ config:
             fi
     -   setup_environment: |
             export PATH=/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp27-cp27m/bin:$PATH
+            if [ "$AUDITWHEEL_PLAT" != "" ]; then
+                export PATH="`ls -1d /opt/python/*|sort -r|while read dir; do echo -n $dir/bin:; done`:$PATH"
+            fi
             if [ "$BASE_PYTHON" = "" ]; then
                 BASE_PYTHON="`which python3`"
             fi
