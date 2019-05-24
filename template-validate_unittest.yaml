@@ -53,7 +53,7 @@ config:
             fi
     -   coveralls: |
             if [ "$COVERALLS_REPO_TOKEN" != "" ]; then
-                $BASE_PYTHON -m pip install coveralls .[test]
+                $BASE_PYTHON -m pip install -q coveralls .[test]
                 coveralls
             fi
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
