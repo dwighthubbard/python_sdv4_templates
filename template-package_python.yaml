@@ -117,7 +117,7 @@ config:
                             interpreter_dir = os.path.join('/opt/python', entry)
                             pip_command = f'{interpreter_dir}/bin/pip'
                             if os.path.isdir(interpreter_dir) and os.path.exists(pip_command):
-                                print('Compiling wheel for the {entry!r} python interpreter', flush=True)
+                                print(f'Compiling wheel for the {entry!r} python interpreter', flush=True)
                                 run_and_log_output([pip_command, 'wheel', '.', '-w', 'wheelbuild'], logfile=f'{build_log_dir}/wheel_build_{entry}.log')
                         for wheel in os.listdir('wheelbuild'):
                             full_wheel_filename = os.path.join('wheelbuild', wheel)
@@ -126,6 +126,7 @@ config:
                     else:
                         print('Building wheel package(s)', flush=True)
                         run_and_log_output([sys.executable, 'setup.py', bdist_wheel] + SETUP_ARGS, logfile=f'{build_log_dir}/wheel_build.log')
+                print('', flush=True)
             EOF
     -   store_package: |
             if [ ! -e "$SD_ARTIFACTS_DIR/packages" ]; then
