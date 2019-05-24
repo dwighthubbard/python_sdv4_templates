@@ -18,6 +18,7 @@ config:
         TOX_ENVLIST: py36,py37,py38
     secrets:
         - CODECOV_TOKEN
+        - COVERALLS_REPO_TOKEN
     steps:
     -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
     -   motd: |
@@ -51,11 +52,8 @@ config:
                 codecov
             fi
     -   coveralls: |
-            $BASE_PYTHON <<EOF
-            import os, subprocess, sys
-            if os.environ.get('COVERALLS', 'False').lower() not in ['1', 'on', 'true']:
-                sys.exit(0)
-            subprocess.call([sys.executable, '-m', 'pip', 'install', 'coveralls'])
-            subprocess.call(['coveralls'])
-            EOF
+            if [ "$COVERALLS_REPO_TOKEN" != "" ]; then
+                $BASE_PYTHON -m pip install coveralls .[test]
+                coveralls
+            fi
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
