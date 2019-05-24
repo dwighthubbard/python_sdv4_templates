@@ -121,7 +121,7 @@ config:
                                 run_and_log_output([pip_command, 'wheel', '.', '-w', 'wheelbuild'], logfile=f'{build_log_dir}/wheel_build_{entry}.log')
                         for wheel in os.listdir('wheelbuild'):
                             full_wheel_filename = os.path.join('wheelbuild', wheel)
-                            print('Bundling shared libraries for wheel package {wheel!r}', flush=True)
+                            print(f'Bundling shared libraries for wheel package {wheel!r}', flush=True)
                             run_and_log_output(['auditwheel', 'repair', full_wheel_filename, '--plat', plat, '-w', 'wheelbuild'], logfile=f'{build_log_dir}/wheel_auditwheel_{wheel}.log')
                     else:
                         print('Building wheel package(s)', flush=True)
