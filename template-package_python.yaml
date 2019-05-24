@@ -18,7 +18,7 @@ config:
         PUBLISH: false
         TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
         PYROMA_MIN_SCORE: 8
-        PACKAGE_TYPES=sdist,wheel
+        PACKAGE_TYPES: sdist,wheel
         SETUP_ARGS: ''
     secrets:
         - PYPI_USER
