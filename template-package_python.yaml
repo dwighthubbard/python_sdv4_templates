@@ -77,9 +77,11 @@ config:
                     parser.write(fh)
             EOF
     -   package_code: |
-            $BASE_PYTHON setup.py sdist bdist_wheel $SETUP_ARGS
-            $BASE_PYTHON <EOF
+            $BASE_PYTHON <<EOF
             import os,shlex,subprocess,sys
+            artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', 'artifacts')
+            package_artifacts = os.path.join(artifacts_dir, 'packages')
+            build_log_dir = os.path.join(artifacts_dir, 'logs/build')
             setup_args = shlex.split(os.environ.get('SETUP_ARGS', ''))
             manylinux = os.environ.get('MANYLINUX', 'True').lower() in ['1', 'true', 'on']
             plat = os.environ.get('AUDITWHEEL_PLAT', '')
@@ -87,10 +89,22 @@ config:
             package_dir = os.environ.get('PACKAGE_DIR', '')
             if not package_dir:
                 package_dir = subprocess.check_output([sys.executable, 'setup.py', '--name']).decode(errors='ignore')
+            
+            os.makedirs(package_artifacts, exists_ok=True)
+            os.makedirs(build_log_dir, exists_ok=True)
+            
+            build_log_dir = os.path.join(
             for package_type in package_types:
                 if package_type == 'sdist':
                     print(f'Building sdist package', flush=True)
-                    subprocess.check_call([sys.executable, 'setup.py', 'sdist'] + setup_args).decode(errors='ignore')
+                    log_filename = f'{build_log_dir}/sdist_build.log'
+                    with open(log_filename, 'wb') as fh:
+                        try:
+                            output = subprocess.check_output([sys.executable, 'setup.py', 'sdist'] + setup_args, stderr=subprocess.STDOUT)
+                        except subprocess.CalledProcessError as error:
+                            print(f'Command {sys.executable} setup.py sdist {" ".join(setup_args)} failed', flush=True)
+                            if error.stdout:
+                                print(error.stdout)
                 elif package_type == 'wheel':
                     print('Building wheel package(s)', flush=True)
                     subprocess.check_call([sys.executable, 'setup.py', bdist_wheel] + SETUP_ARGS)
