@@ -95,6 +95,7 @@ config:
             
             def run_and_log_output(command, logfile):
                 with open(logfile, 'wb') as fh:
+                    print(f'Running command: {" ".join(command)}', flush=True)
                     try:
                         output = subprocess.check_output(command, stderr=subprocess.STDOUT)
                     except subprocess.CalledProcessError as error:
@@ -112,9 +113,10 @@ config:
                         print('Generating manylinux wheels', flush=True)
                         os.makedirs('wheelbuild', exist_ok=True)
                         for entry in os.listdir('/opt/python'):
-                            pip_command = f'/opt/python/{entry}/bin/pip'
-                            if os.path.isdir(entry) and os.path.exists(pip_command):
-                                print('Compiling wheel for the /opt/python/{entry}/bin/python interpreter', flush=True)
+                            interpreter_dir = os.path.join('/opt/python', entry)
+                            pip_command = f'{interpreter_dir}/bin/pip'
+                            if os.path.isdir(interpreter_dir) and os.path.exists(pip_command):
+                                print('Compiling wheel for the {entry!r} python interpreter', flush=True)
                                 run_and_log_output([pip_command, 'wheel', '.', '-w', 'wheelbuild'], logfile=f'{build_log_dir}/wheel_build_{entry}.log')
                         for wheel in os.listdir('wheelbuild'):
                             full_wheel_filename = os.path.join('wheelbuild', wheel)
