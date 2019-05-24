@@ -129,6 +129,7 @@ config:
                             full_wheel_filename = os.path.join('wheelbuild', wheel)
                             print(f'Bundling shared libraries for wheel package {wheel!r}', flush=True)
                             run_and_log_output(['auditwheel', 'repair', full_wheel_filename, '--plat', plat, '-w', 'wheelbuild'], logfile=f'{build_log_dir}/wheel_auditwheel_{wheel}.log')
+                            os.remove(full_wheel_filename)
                     else:
                         print('Building wheel package(s)', flush=True)
                         run_and_log_output([sys.executable, 'setup.py', bdist_wheel] + SETUP_ARGS, logfile=f'{build_log_dir}/wheel_build.log')
@@ -140,6 +141,7 @@ config:
             fi
             cp dist/* "$SD_ARTIFACTS_DIR/packages" || true
             cp wheelbuild/* "$SD_ARTIFACTS_DIR/packages" || true
+            # cp wheelbuild/*${AUDITWHEEL_PLAT}*.whl "$SD_ARTIFACTS_DIR/packages" || true
     -   check_packages: |
             $BASE_PYTHON << EOF
             import os
