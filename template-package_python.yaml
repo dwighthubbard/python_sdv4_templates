@@ -103,7 +103,6 @@ config:
                             print(error.stdout)
                         sys.exit(error.returncode)
             
-            build_log_dir = os.path.join(
             for package_type in package_types:
                 if package_type == 'sdist':
                     print(f'Building sdist package', flush=True)
