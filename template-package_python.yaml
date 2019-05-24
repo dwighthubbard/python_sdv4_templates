@@ -90,8 +90,8 @@ config:
             if not package_dir:
                 package_dir = subprocess.check_output([sys.executable, 'setup.py', '--name']).decode(errors='ignore')
             
-            os.makedirs(package_artifacts, exists_ok=True)
-            os.makedirs(build_log_dir, exists_ok=True)
+            os.makedirs(package_artifacts, exist_ok=True)
+            os.makedirs(build_log_dir, exist_ok=True)
             
             def run_and_log_output(command, logfile):
                 with open(logfile, 'wb') as fh:
@@ -110,7 +110,7 @@ config:
                 elif package_type == 'wheel':
                     if manylinux and plat:
                         print('Generating manylinux wheels', flush=True)
-                        os.makedirs('wheelbuild', exists_ok=True)
+                        os.makedirs('wheelbuild', exist_ok=True)
                         for entry in os.listdir('/opt/python'):
                             pip_command = f'/opt/python/{entry}/bin/pip'
                             if os.path.isdir(entry) and os.path.exists(pip_command):
