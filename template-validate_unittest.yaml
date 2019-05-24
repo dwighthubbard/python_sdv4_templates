@@ -10,7 +10,6 @@ config:
     image: manylinux2010
     environment:
         BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
-        COVERALLS: false
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
         TEST_RUNNER: pytest
