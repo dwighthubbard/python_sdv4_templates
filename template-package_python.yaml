@@ -1,18 +1,24 @@
 namespace: python
 name: package_python
 description: Package the application as an sdist package
+images:
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
+    ubuntu: ubuntu:latest
 version: 1.0.1
 maintainer: python-devel@oath.com
 config:
-    image: quay.io/pypa/manylinux2010_x86_64
-    # image: ubuntu:19.04
+    image: manylinux2010
     environment:
         BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
+        MANYLINUX: True
         PUBLISH: false
         TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
         PYROMA_MIN_SCORE: 8
+        PACKAGE_TYPES=sdist,wheel
         SETUP_ARGS: ''
     secrets:
         - PYPI_USER
@@ -48,8 +54,8 @@ config:
             print(', '.join(keys))
             EOF
     -   install_utility: |
-            $BASE_PYTHON -m pip install setuptools wheel 
-            $BASE_PYTHON -m pip install pyroma twine
+            $BASE_PYTHON -m pip install setuptools 
+            $BASE_PYTHON -m pip install wheel auditwheel pyroma twine
     -   update_version: |
             $BASE_PYTHON << EOF
             from configparser import ConfigParser
@@ -58,7 +64,6 @@ config:
             import sys
             
             version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
-            
             if version == 'null':
                 print('Unable to fetch package.version from the ci pipeline metadata', flush=True)
                 sys.exit(0)
@@ -72,15 +77,42 @@ config:
                     parser.write(fh)
             EOF
     -   package_code: |
-            if [ -z "$PACKAGE_DIR"  ]; then
-                PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
-            fi
             $BASE_PYTHON setup.py sdist bdist_wheel $SETUP_ARGS
+            $BASE_PYTHON <EOF
+            import os,shlex,subprocess,sys
+            setup_args = shlex.split(os.environ.get('SETUP_ARGS', ''))
+            manylinux = os.environ.get('MANYLINUX', 'True').lower() in ['1', 'true', 'on']
+            plat = os.environ.get('AUDITWHEEL_PLAT', '')
+            package_types = [ _.strip().lower() for _ in os.environ.get('PACKAGE_TYPES', 'sdist,wheel').split(',')]
+            package_dir = os.environ.get('PACKAGE_DIR', '')
+            if not package_dir:
+                package_dir = subprocess.check_output([sys.executable, 'setup.py', '--name']).decode(errors='ignore')
+            for package_type in package_types:
+                if package_type == 'sdist':
+                    print(f'Building sdist package', flush=True)
+                    subprocess.check_call([sys.executable, 'setup.py', 'sdist'] + setup_args).decode(errors='ignore')
+                elif package_type == 'wheel':
+                    print('Building wheel package(s)', flush=True)
+                    subprocess.check_call([sys.executable, 'setup.py', bdist_wheel] + SETUP_ARGS)
+                    if manylinux and plat:
+                        print('Generating manylinux wheels', flush=True)
+                        os.makedirs('wheelbuild', exists_ok=True)
+                        for entry in os.listdir('/opt/python'):
+                            pip_command = f'/opt/python/{entry}/bin/pip'
+                            if os.path.isdir(entry) and os.path.exists(pip_command):
+                                print('Compiling wheel for the /opt/python/{entry}/bin/python interpreter', flush=True)
+                                subprocess.check_call([pip_command, 'wheel', '.', '-w', 'wheelbuild'])
+                        for wheel in os.listdir('wheelbuild'):
+                            wheel = os.path.join('wheelbuild', wheel)
+                            print('Bundling shared libraries for wheel package {wheel!r}', flush=True)
+                            subprocess.check_call(['auditwheel', 'repair', wheel, '--plat', plat, '-w', 'wheelbuild'])
+            EOF
     -   store_package: |
             if [ ! -e "$SD_ARTIFACTS_DIR/packages" ]; then
                 mkdir -p "$SD_ARTIFACTS_DIR/packages"
             fi
-            cp dist/* "$SD_ARTIFACTS_DIR/packages" 
+            cp dist/* "$SD_ARTIFACTS_DIR/packages" || true
+            cp wheelbuild/* "$SD_ARTIFACTS_DIR/packages" || true
     -   check_packages: |
             $BASE_PYTHON << EOF
             import os
