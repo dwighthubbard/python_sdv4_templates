@@ -98,6 +98,7 @@ config:
                     print(f'Running command: {" ".join(command)}', flush=True)
                     try:
                         output = subprocess.check_output(command, stderr=subprocess.STDOUT)
+                        fh.write(output)
                     except subprocess.CalledProcessError as error:
                         print(f'Command {command!r} failed', flush=True)
                         if error.stdout:
