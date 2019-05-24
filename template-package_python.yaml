@@ -85,6 +85,7 @@ config:
             import os,shlex,subprocess,sys
             artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', 'artifacts')
             package_artifacts = os.path.join(artifacts_dir, 'packages')
+            wheel_build_dir = os.path.join(artifacts_dir, 'wheelbuild')
             build_log_dir = os.path.join(artifacts_dir, 'logs/build')
             setup_args = shlex.split(os.environ.get('SETUP_ARGS', ''))
             manylinux = os.environ.get('MANYLINUX', 'True').lower() in ['1', 'true', 'on']
@@ -92,9 +93,10 @@ config:
             package_types = [ _.strip().lower() for _ in os.environ.get('PACKAGE_TYPES', 'sdist,wheel').split(',')]
             package_name = subprocess.check_output([sys.executable, 'setup.py', '--name']).decode(errors='ignore')
             package_dir = os.environ.get('PACKAGE_DIR', package_name)
-                        
+                     
             os.makedirs(package_artifacts, exist_ok=True)
             os.makedirs(build_log_dir, exist_ok=True)
+            os.makedirs(wheel_build_dir, exist_ok=True)
             
             def run_and_log_output(command, logfile):
                 with open(logfile, 'wb') as fh:
@@ -115,21 +117,20 @@ config:
                 elif package_type == 'wheel':
                     if manylinux and plat:
                         print('Generating manylinux wheels', flush=True)
-                        os.makedirs('wheelbuild', exist_ok=True)
                         for entry in os.listdir('/opt/python'):
                             interpreter_dir = os.path.join('/opt/python', entry)
                             pip_command = f'{interpreter_dir}/bin/pip'
                             if os.path.isdir(interpreter_dir) and os.path.exists(pip_command):
                                 print(f'Compiling wheel for the {entry!r} python interpreter', flush=True)
-                                run_and_log_output([pip_command, 'wheel', '.', '-w', 'wheelbuild'], logfile=f'{build_log_dir}/wheel_build_{entry}.log')
-                        for wheel in os.listdir('wheelbuild'):
-                            full_wheel_filename = os.path.join('wheelbuild', wheel)
+                                run_and_log_output([pip_command, 'wheel', '.', '-w', wheel_build_dir], logfile=f'{build_log_dir}/wheel_build_{entry}.log')
+                        for wheel in os.listdir(wheel_build_dir):
+                            full_wheel_filename = os.path.join(wheel_build_dir, wheel)
                             if not wheel.startswith(package_name + '-'):
-                                # Remove wheels built as dependencies
+                                print(f'Removing dependency wheel {wheel!r}', flush=True)
                                 os.remove(full_wheel_filename)
                                 continue
                             print(f'Bundling shared libraries for wheel package {wheel!r}', flush=True)
-                            run_and_log_output(['auditwheel', 'repair', full_wheel_filename, '--plat', plat, '-w', 'wheelbuild'], logfile=f'{build_log_dir}/wheel_auditwheel_{wheel}.log')
+                            run_and_log_output(['auditwheel', 'repair', full_wheel_filename, '--plat', plat, '-w', wheel_build_dir], logfile=f'{build_log_dir}/wheel_auditwheel_{wheel}.log')
                             os.remove(full_wheel_filename)
                     else:
                         print('Building wheel package(s)', flush=True)
@@ -141,7 +142,7 @@ config:
                 mkdir -p "$SD_ARTIFACTS_DIR/packages"
             fi
             cp dist/* "$SD_ARTIFACTS_DIR/packages" || true
-            cp wheelbuild/* "$SD_ARTIFACTS_DIR/packages" || true
+            cp "$SD_ARTIFACTS_DIR/wheelbuild/*" "$SD_ARTIFACTS_DIR/packages" || true
             # cp wheelbuild/*${AUDITWHEEL_PLAT}*.whl "$SD_ARTIFACTS_DIR/packages" || true
     -   check_packages: |
             $BASE_PYTHON << EOF
