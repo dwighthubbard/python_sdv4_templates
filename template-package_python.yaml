@@ -114,10 +114,10 @@ config:
                 if package_type == 'sdist':
                     print(f'Building sdist package', flush=True)
                     run_and_log_output(command=[sys.executable, 'setup.py', 'sdist'] + setup_args, logfile=f'{build_log_dir}/sdist_build.log')
-                    if os.path.exists('dist')
-                    for filename in os.listdir('dist'):
-                        print(f'Moving dist/{filename} -> {package_artifacts}/{filename}')
-                        os.rename(f'dist/{filename}', f'{package_artifacts}/{filename}')
+                    if os.path.exists('dist'):
+                        for filename in os.listdir('dist'):
+                            print(f'Moving dist/{filename} -> {package_artifacts}/{filename}')
+                            os.rename(f'dist/{filename}', f'{package_artifacts}/{filename}')
                 elif package_type == 'wheel':
                     if manylinux and plat:
                         print('Generating manylinux wheels', flush=True)
