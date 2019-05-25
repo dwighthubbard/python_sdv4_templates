@@ -108,8 +108,9 @@ config:
                         print(f'Command {command!r} failed', flush=True)
                         if error.stdout:
                             print(error.stdout)
-                        sys.exit(error.returncode)
+                        raise error
             
+            failed = set()
             for package_type in package_types:
                 if package_type == 'sdist':
                     print(f'Building sdist package', flush=True)
@@ -119,6 +120,14 @@ config:
                             print(f'Moving dist/{filename} -> {package_artifacts}/{filename}')
                             os.rename(f'dist/{filename}', f'{package_artifacts}/{filename}')
                 elif package_type == 'wheel':
+                    print('Building wheel package(s)', flush=True)
+                    before = set(os.listdir('dist'))
+                    run_and_log_output([sys.executable, 'setup.py', bdist_wheel] + SETUP_ARGS, logfile=f'{build_log_dir}/wheel_build.log')
+                    after = set(os.listdir('dist'))
+                    for filename in after - before:
+                        if filename.endswith('none-any.whl'):
+                            print('Package is generating a pure python wheel, disabling manylinux', flush=True)
+                            manylinux = False
                     if manylinux and plat:
                         print('Generating manylinux wheels', flush=True)
                         for entry in os.listdir('/opt/python'):
@@ -126,7 +135,10 @@ config:
                             pip_command = f'{interpreter_dir}/bin/pip'
                             if os.path.isdir(interpreter_dir) and os.path.exists(pip_command):
                                 print(f'Compiling wheel for the {entry!r} python interpreter', flush=True)
-                                run_and_log_output([pip_command, 'wheel', '.', '-w', wheel_build_dir], logfile=f'{build_log_dir}/wheel_build_{entry}.log')
+                                try:
+                                    run_and_log_output([pip_command, 'wheel', '.', '-w', wheel_build_dir], logfile=f'{build_log_dir}/wheel_build_{entry}.log')
+                                except subprocess.CalledProcessError:
+                                    failed.add(entry)
                         for wheel in os.listdir(wheel_build_dir):
                             full_wheel_filename = os.path.join(wheel_build_dir, wheel)
                             if not wheel.startswith(package_name + '-'):
@@ -139,13 +151,12 @@ config:
                             print(f'Bundling shared libraries for wheel package {wheel!r}', flush=True)
                             run_and_log_output(['auditwheel', 'repair', full_wheel_filename, '--plat', plat, '-w', wheel_build_dir], logfile=f'{build_log_dir}/wheel_auditwheel_{wheel}.log')
                             os.remove(full_wheel_filename)
-                    else:
-                        print('Building wheel package(s)', flush=True)
-                        run_and_log_output([sys.executable, 'setup.py', bdist_wheel] + SETUP_ARGS, logfile=f'{build_log_dir}/wheel_build.log')
                     for filename in os.listdir(wheel_build_dir):
                         print(f'Moving {wheel_build_dir}/{filename} -> {package_artifacts}/{filename}')
                         os.rename(f'{wheel_build_dir}/{filename}', f'{package_artifacts}/{filename}')
                 print('', flush=True)
+            if failed:
+                print(f'Package build failed for {failed}')
             EOF
     -   store_package: echo "storing package"
     -   check_packages: |
