@@ -122,7 +122,7 @@ config:
                 elif package_type == 'wheel':
                     print('Building wheel package(s)', flush=True)
                     before = set(os.listdir('dist'))
-                    run_and_log_output([sys.executable, 'setup.py', 'bdist_wheel'] + SETUP_ARGS, logfile=f'{build_log_dir}/wheel_build.log')
+                    run_and_log_output([sys.executable, 'setup.py', 'bdist_wheel'] + setup_args, logfile=f'{build_log_dir}/wheel_build.log')
                     after = set(os.listdir('dist'))
                     for filename in after - before:
                         if filename.endswith('none-any.whl'):
