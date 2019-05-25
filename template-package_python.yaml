@@ -128,7 +128,8 @@ config:
                         if filename.endswith('none-any.whl'):
                             print('Package is generating a pure python wheel, disabling manylinux', flush=True)
                             manylinux = False
-                            break
+                            print(f'Moving dist/{filename} -> {package_artifacts}/{filename}')
+                            os.rename(f'dist/{filename}', f'{package_artifacts}/{filename}')
                     if manylinux and plat:
                         print('Generating manylinux wheels', flush=True)
                         for entry in os.listdir('/opt/python'):
