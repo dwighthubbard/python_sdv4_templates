@@ -64,7 +64,10 @@ config:
                 test_requires = [ _.strip() for _ in parser['options.extras_require']['test'].strip().split(os.linesep)]
             except KeyError:
                 test_requires = []
-            install_requires = [ _.strip() for _ in parser['options']['install_requires'].strip().split(os.linesep)]
+            try:
+                install_requires = [ _.strip() for _ in parser['options']['install_requires'].strip().split(os.linesep)]
+            except KeyError:
+                install_requires = []
             with tempfile.TemporaryDirectory() as tempdir:
                 subprocess.check_call([sys.executable, '-m', 'venv', tempdir])
                 venv_bin_dir = os.path.join(tempdir, 'bin')                
