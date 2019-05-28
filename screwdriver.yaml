@@ -6,6 +6,7 @@ jobs:
         steps:
             - install: npm install screwdriver-template-main
             - publish: ./process_templates publish
+            - meta set tests.coverage 100.0
         requires: [~commit]
     validate_templates:
         image: node:6
