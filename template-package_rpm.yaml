@@ -75,7 +75,7 @@ config:
             EOF
     -   package_code: |
             PACKAGE_VERSION=`meta get package.version`
-            /tmp/testvenv/bin/invirtualenv create_package rpm
+            invirtualenv create_package rpm
     -   store_package: |
             mkdir -p "$SD_ARTIFACTS_DIR/package/rpm"
             cp "*.rpm" "$SD_ARTIFACTS_DIR/package/rpm"
