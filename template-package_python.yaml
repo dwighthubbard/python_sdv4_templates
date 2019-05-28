@@ -176,6 +176,9 @@ config:
             $BASE_PYTHON << EOF
             import os, subprocess, sys
             package_dir = f'{os.environ["SD_ARTIFACTS_DIR"]}/packages'
+            if not os.path.exists(package_dir):
+               print('Package directory does not exist, no packages to validate', flush=True)
+               sys.exit(0)
             if os.environ['PUBLISH'].lower() not in ['true', '1', 'on']:
                 print('Publish is disabled, skipping publish operation', flush=True)
                 sys.exit(0)
