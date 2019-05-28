@@ -76,9 +76,10 @@ config:
     -   package_code: |
             PACKAGE_VERSION=`meta get package.version`
             invirtualenv create_package rpm
+            ls -lh *.rpm
     -   store_package: |
             mkdir -p "$SD_ARTIFACTS_DIR/package/rpm"
-            cp "*.rpm" "$SD_ARTIFACTS_DIR/package/rpm"
+            cp "*.rpm" "$SD_ARTIFACTS_DIR/package/rpm" || true
     -   check_packages: |
             $BASE_PYTHON << EOF
             import os
