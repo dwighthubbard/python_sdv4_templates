@@ -14,22 +14,14 @@ config:
         BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
-        MANYLINUX: True
         PUBLISH: false
-        TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
-        PYROMA_MIN_SCORE: 8
-        PACKAGE_TYPES: sdist,wheel
         SETUP_ARGS: ''
-    secrets:
-        - PYPI_USER
-        - PYPI_PASSWORD
-        - TEST_PYPI_USER
-        - TEST_PYPI_PASSWORD
+        PIP_EXTRA_INDEX_URL: https://test.pypi.org/simple
     steps:
     -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
     -   motd: |
             cat << EOF
-            This job will generate python packages, check them and publish them to a python packaging
+            This job will generate rpm packages, check them
             repository.
             EOF
     -   init_os: |
@@ -82,86 +74,6 @@ config:
                     parser.write(fh)
             EOF
     -   package_code: |
-            $BASE_PYTHON <<EOF
-            import os,shlex,subprocess,sys
-            artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', 'artifacts')
-            package_artifacts = os.path.join(artifacts_dir, 'packages')
-            wheel_build_dir = os.path.join(artifacts_dir, 'wheelbuild')
-            build_log_dir = os.path.join(artifacts_dir, 'logs/build')
-            setup_args = shlex.split(os.environ.get('SETUP_ARGS', ''))
-            manylinux = os.environ.get('MANYLINUX', 'True').lower() in ['1', 'true', 'on']
-            plat = os.environ.get('AUDITWHEEL_PLAT', '')
-            package_types = [ _.strip().lower() for _ in os.environ.get('PACKAGE_TYPES', 'sdist,wheel').split(',')]
-            package_name = subprocess.check_output([sys.executable, 'setup.py', '--name']).decode(errors='ignore').strip()
-            package_dir = os.environ.get('PACKAGE_DIR', package_name)
-                     
-            os.makedirs(package_artifacts, exist_ok=True)
-            os.makedirs(build_log_dir, exist_ok=True)
-            os.makedirs(wheel_build_dir, exist_ok=True)
-            
-            def run_and_log_output(command, logfile):
-                with open(logfile, 'wb') as fh:
-                    print(f'Running command: {" ".join(command)}', flush=True)
-                    try:
-                        output = subprocess.check_output(command, stderr=subprocess.STDOUT)
-                        fh.write(output)
-                    except subprocess.CalledProcessError as error:
-                        print(f'Command {command!r} failed', flush=True)
-                        if error.stdout:
-                            print(error.stdout)
-                        raise error
-            
-            failed = set()
-            for package_type in package_types:
-                if package_type == 'sdist':
-                    print(f'Building sdist package', flush=True)
-                    run_and_log_output(command=[sys.executable, 'setup.py', 'sdist'] + setup_args, logfile=f'{build_log_dir}/sdist_build.log')
-                    if os.path.exists('dist'):
-                        for filename in os.listdir('dist'):
-                            print(f'Moving dist/{filename} -> {package_artifacts}/{filename}')
-                            os.rename(f'dist/{filename}', f'{package_artifacts}/{filename}')
-                elif package_type == 'wheel':
-                    print('Building wheel package(s)', flush=True)
-                    before = set(os.listdir('dist'))
-                    run_and_log_output([sys.executable, 'setup.py', 'bdist_wheel'] + setup_args, logfile=f'{build_log_dir}/wheel_build.log')
-                    after = set(os.listdir('dist'))
-                    for filename in after - before:
-                        if filename.endswith('none-any.whl'):
-                            print('Package is generating a pure python wheel, disabling manylinux', flush=True)
-                            manylinux = False
-                            print(f'Moving dist/{filename} -> {package_artifacts}/{filename}')
-                            os.rename(f'dist/{filename}', f'{package_artifacts}/{filename}')
-                    if manylinux and plat:
-                        print('Generating manylinux wheels', flush=True)
-                        for entry in os.listdir('/opt/python'):
-                            interpreter_dir = os.path.join('/opt/python', entry)
-                            pip_command = f'{interpreter_dir}/bin/pip'
-                            if os.path.isdir(interpreter_dir) and os.path.exists(pip_command):
-                                print(f'Compiling wheel for the {entry!r} python interpreter', flush=True)
-                                try:
-                                    run_and_log_output([pip_command, 'wheel', '.', '-w', wheel_build_dir], logfile=f'{build_log_dir}/wheel_build_{entry}.log')
-                                except subprocess.CalledProcessError:
-                                    failed.add(entry)
-                        for wheel in os.listdir(wheel_build_dir):
-                            full_wheel_filename = os.path.join(wheel_build_dir, wheel)
-                            if not wheel.startswith(package_name + '-'):
-                                print(f'Removing dependency wheel {wheel!r}', flush=True)
-                                os.remove(full_wheel_filename)
-                                continue
-                            if wheel.endswith('none-any.whl'):
-                                # Not a binary wheel
-                                continue
-                            print(f'Bundling shared libraries for wheel package {wheel!r}', flush=True)
-                            run_and_log_output(['auditwheel', 'repair', full_wheel_filename, '--plat', plat, '-w', wheel_build_dir], logfile=f'{build_log_dir}/wheel_auditwheel_{wheel}.log')
-                            os.remove(full_wheel_filename)
-                    for filename in os.listdir(wheel_build_dir):
-                        print(f'Moving {wheel_build_dir}/{filename} -> {package_artifacts}/{filename}')
-                        os.rename(f'{wheel_build_dir}/{filename}', f'{package_artifacts}/{filename}')
-                print('', flush=True)
-            if failed:
-                print(f'Package build failed for {failed}')
-            EOF
-    -   package_rpm: |
             PACKAGE_VERSION=`meta get package.version`
             /tmp/testvenv/bin/invirtualenv create_package rpm
     -   store_package: |
