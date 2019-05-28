@@ -94,7 +94,7 @@ config:
                 print('Installed packages', flush=True)
                 subprocess.call([venv_pip, 'list'])
                 
-                command = ['venv_pytest]
+                command = ['venv_pytest']
                 if pytest_args:
                     command += pytest_args
                 command.append(test_dir)
