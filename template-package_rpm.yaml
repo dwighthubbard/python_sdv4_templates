@@ -79,13 +79,14 @@ config:
             ls -lh *.rpm
     -   store_package: |
             $BASE_PYTHON << EOF
-            import os
+            import os, shutil
             package_dir = f'{os.environ["SD_ARTIFACTS_DIR"]}/package/rpm'
             os.makedirs(package_dir, exist_ok=True)
             for filename in os.listdir('.'):
                 if filename.endswith('rpm'):
                     dest = os.path.join(package_dir, filename)
                     print(f'Copying {filename} -> {dest}', flush=True)
+                    shutil.copy(filename, dest)
             EOF
     -   check_packages: |
             $BASE_PYTHON << EOF
