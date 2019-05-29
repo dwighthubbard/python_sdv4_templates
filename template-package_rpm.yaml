@@ -12,7 +12,7 @@ maintainer: python-devel@oath.com
 config:
     image: fedora
     environment:
-        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
+        BASE_PYTHON: ''
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
         PUBLISH: false
