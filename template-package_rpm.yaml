@@ -5,11 +5,12 @@ images:
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
     manylinux1_32: quay.io/pypa/manylinux1_i686
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
+    fedora: fedora:latest
     ubuntu: ubuntu:latest
 version: 1.0.1
 maintainer: python-devel@oath.com
 config:
-    image: manylinux2010
+    image: fedora
     environment:
         BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
         GIT_SHALLOW_CLONE: false
