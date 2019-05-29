@@ -215,5 +215,21 @@ config:
                     print(f'Upload of package file {filename!r} failed', flush=True)
                     sys.exit(error.returncode)
             EOF
+    -   tag_release: |
+            $BASE_PYTHON -m pip install gitpython
+            $BASE_PYTHON << EOF
+            import os, subprocess
+            from git import Repo
+            version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
+            if version == 'null':
+                print('No release version in metadata', flush=True)
+                sys.exit(0)
+            current_repo = Repo()
+            tag = current_repo.create_tag(version, message=f'Adding release {version}')
+            remotes = list(current_repo.remotes)
+            if remotes:
+                current_repo.remotes.origin.push(tag)
+                print(f'Added release tag for version {tag}')
+            EOF
     -   disable_sonarqube: rm sonar-project.properties || true  
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
