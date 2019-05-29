@@ -37,7 +37,7 @@ config:
                 export PATH="`ls -1d /opt/python/*|sort -r|while read dir; do echo -n $dir/bin:; done`:$PATH"
             fi
             if [ "$BASE_PYTHON" = "" ]; then
-                BASE_PYTHON="`which python3`"
+                BASE_PYTHON="`python3 -c "import sys;print(sys.executable)"`"
             fi
             export BINDIR="`dirname ${BASE_PYTHON}`"
             if [ "$BINDIR" != "" ]; then
