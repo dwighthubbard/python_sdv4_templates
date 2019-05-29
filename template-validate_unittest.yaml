@@ -47,6 +47,22 @@ config:
     -   install_tox: $BASE_PYTHON -m pip install tox
     -   update_version: echo "Update version"
     -   validate_code: tox $TOX_ARGS
+    -   add_coverage_metadata: |
+            $BASE_PYTHON -m pip install coverage
+            $BASE_PYTHON << EOF
+            import os, subprocess
+            try:
+                output = subprocess.check_output(['coverage', 'report'])
+            except (subprocess.CalledProcessErrror, FileNotFoundError):
+                print('Not able to access coverage report, not updating coverage', flush=True)
+                sys.exit(0)
+            lines = output.decode(errors='ignore').split(os.linesep)
+            if line[-1].startswith('TOTAL'):
+                coverage_percentage = line[-1].split()[-1].replace('%', '')
+                subprocess.call(['meta', 'set', 'tests.coverage', coverage_percentage])
+            else:
+                print('Not able to find total from coverage report, not updating coverage', flush=True)
+            EOF
     -   codecov: |
             if [ "$CODECOV_TOKEN" != "" ]; then
                 $BASE_PYTHON -m pip install codecov .[test]
