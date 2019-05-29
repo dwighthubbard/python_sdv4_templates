@@ -60,11 +60,12 @@ config:
                 print('Not able to access coverage report, not updating coverage', flush=True)
                 sys.exit(0)
             lines = output.decode(errors='ignore').split(os.linesep)
-            if lines[-1].startswith('TOTAL'):
-                coverage_percentage = lines[-1].split()[-1].replace('%', '')
-                subprocess.call(['meta', 'set', 'tests.coverage', coverage_percentage])
-            else:
-                print('Not able to find total from coverage report, not updating coverage', flush=True)
+            
+            for line in [ _.strip() for _ in lines]:
+                if line.startswith('TOTAL'):
+                    coverage_percentage = line.split()[-1].replace('%', '')
+                    print(f'meta set tests.coverage {coverage_percentage}')
+                    subprocess.call(['meta', 'set', 'tests.coverage', coverage_percentage])
             EOF
     -   codecov: |
             if [ "$CODECOV_TOKEN" != "" ]; then
