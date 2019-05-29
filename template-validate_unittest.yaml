@@ -47,6 +47,34 @@ config:
     -   install_tox: $BASE_PYTHON -m pip install tox
     -   update_version: echo "Update version"
     -   validate_code: tox $TOX_ARGS
+    -   add_test_metadata: |
+            $BASE_PYTHON -m pip install junitparser
+            $BASE_PYTHON << EOF
+            import os
+            from junitparser import JUnitXml
+
+            testdir = os.path.join(os.environ["SD_ARTIFACTS_DIR"], 'test')
+            test_failed = 0
+            test_run = 0
+            test_ok = 0
+
+            for filename in os.listdir(SD_):
+                if not filename.startswith('pytest_'):
+                    continue
+                if not filename.endswith('.xml'):
+                    continue  
+                xml = JUnitXml.fromfile(filename)
+                test_failed += xml.errors + xml.failures
+                test_run += xml.tests - xml.skipped
+
+            if test_run == 0:
+                print('No tests run, not setting metadata', flush=True)
+                sys.exit(0)
+            test_ok = test_run - test_failed
+            test_summary = f'{test_ok}/{test_run}'
+            print(f'meta set tests.results {test_summary}')
+            subprocess.call(['meta', 'set', 'tests.results', test_summary])
+            EOF
     -   add_coverage_metadata: |
             $BASE_PYTHON -m pip install coverage
             $BASE_PYTHON << EOF
