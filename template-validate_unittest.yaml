@@ -58,12 +58,12 @@ config:
             test_run = 0
             test_ok = 0
 
-            for filename in os.listdir(SD_):
+            for filename in os.listdir(testdir):
                 if not filename.startswith('pytest_'):
                     continue
                 if not filename.endswith('.xml'):
                     continue  
-                xml = JUnitXml.fromfile(filename)
+                xml = JUnitXml.fromfile(os.path.join(testdir, filename))
                 test_failed += xml.errors + xml.failures
                 test_run += xml.tests - xml.skipped
 
