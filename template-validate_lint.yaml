@@ -55,5 +55,8 @@ config:
                 mkdir -p "$OUTPUT_DIR"
             fi
             # $VALID_VENV/bin/pylint --output-format=parseable $PACKAGE_DIR
-            $VALID_VENV/bin/pylint -r n --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" $PACKAGE_DIR| tee $SD_ARTIFACTS_DIR/pylint.txt
+            $VALID_VENV/bin/pylint -r n --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" $PACKAGE_DIR > $SD_ARTIFACTS_DIR/pylint.txt
+            RC="$?"
+            cat $SD_ARTIFACTS_DIR/pylint.txt
+            exit $RC
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
