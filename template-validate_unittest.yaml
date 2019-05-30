@@ -93,7 +93,7 @@ config:
                 if line.startswith('TOTAL'):
                     coverage_percentage = line.split()[-1].replace('%', '')
                     print(f'meta set tests.coverage {float(coverage_percentage)}')
-                    subprocess.call(['meta', 'set', 'tests.coverage', coverage_percentage])
+                    subprocess.call(['meta', 'set', 'tests.coverage', str(float(coverage_percentage))])
             EOF
     -   codecov: |
             if [ "$CODECOV_TOKEN" != "" ]; then
