@@ -47,6 +47,18 @@ config:
     -   install_tox: $BASE_PYTHON -m pip install tox
     -   update_version: echo "Update version"
     -   validate_code: tox $TOX_ARGS
+    -   store_artifacts: |
+            BASE_PYTHON << EOF
+            import os, shutil
+            testdir = os.path.join(os.environ["SD_ARTIFACTS_DIR"], 'test')
+            os.makedirs(testdir, exist_ok=True)
+            for filename in os.listdir('.'):
+                if not filename.endswith('.xml'):
+                    continue
+                if 'test' in filename or 'coverage' in filename:
+                    print(f'Copying  {filename} -> {testdir}/{filename}', flush=True)
+                    shutil.copy(filename, os.path.join(testdir, filename))
+            EOF
     -   add_test_metadata: |
             $BASE_PYTHON -m pip install junitparser
             $BASE_PYTHON << EOF
@@ -54,6 +66,9 @@ config:
             from junitparser import JUnitXml
 
             testdir = os.path.join(os.environ["SD_ARTIFACTS_DIR"], 'test')
+            if not os.path.exists(testdir):
+                print('No test metadata files to parse', flush=True)
+                sys.exit(0)
             test_failed = 0
             test_run = 0
             test_ok = 0
