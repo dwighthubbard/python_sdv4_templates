@@ -222,7 +222,9 @@ config:
             if version == 'null':
                 print('No release version in metadata', flush=True)
                 sys.exit(0)
+            print('Creating tag', flush=True)
             subprocess.call(['git', 'tag', '-a', version, '-m', f'Adding release {version}'])
+            print('Pushing the tags')
             subprocess.call(['git', 'push', '--tags'])
             EOF
     -   disable_sonarqube: rm sonar-project.properties || true  
