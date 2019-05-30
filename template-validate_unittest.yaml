@@ -62,22 +62,25 @@ config:
     -   add_test_metadata: |
             $BASE_PYTHON -m pip install junitparser
             $BASE_PYTHON << EOF
-            import os,subprocess
+            import os,subprocess, sys
             from junitparser import JUnitXml
 
             testdir = os.path.join(os.environ["SD_ARTIFACTS_DIR"], 'test')
             if not os.path.exists(testdir):
                 print('No test metadata files to parse', flush=True)
                 sys.exit(0)
+ 
             test_failed = 0
             test_run = 0
             test_ok = 0
 
             for filename in os.listdir(testdir):
-                if not filename.startswith('pytest_'):
+                if 'test' not in filename:
                     continue
+                    
                 if not filename.endswith('.xml'):
-                    continue  
+                    continue
+                    
                 xml = JUnitXml.fromfile(os.path.join(testdir, filename))
                 test_failed += xml.errors + xml.failures
                 test_run += xml.tests - xml.skipped
@@ -85,6 +88,7 @@ config:
             if test_run == 0:
                 print('No tests run, not setting metadata', flush=True)
                 sys.exit(0)
+                
             test_ok = test_run - test_failed
             test_summary = f'{test_ok}/{test_run}'
             print(f'meta set tests.results {test_summary}')
