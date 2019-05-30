@@ -92,7 +92,7 @@ config:
             for line in [ _.strip() for _ in lines]:
                 if line.startswith('TOTAL'):
                     coverage_percentage = line.split()[-1].replace('%', '')
-                    print(f'meta set tests.coverage {coverage_percentage}')
+                    print(f'meta set tests.coverage {float(coverage_percentage)}')
                     subprocess.call(['meta', 'set', 'tests.coverage', coverage_percentage])
             EOF
     -   codecov: |
