@@ -13,7 +13,7 @@ config:
         TOX_ARGS: ''
         TOX_ENVLIST: py36,py37,py38
         SECURITY_CHECK_ENFORCING: 'True'
-        PACKAGE_DIRECTORY: src
+        PACKAGE_DIR: ''
         SECURITY_REPORT_FORMAT: yaml,txt
         SECURITY_BANDIT_CONFIG_ARGS: ''
     settings: {}
@@ -50,7 +50,11 @@ config:
     -   bandit_config: bandit-config-generator -o .bandit.ini ${SECURITY_BANDIT_CONFIG_ARGS}
     -   init: echo "Command to initialize screwdriver operations goes here"
     -   update_version: echo "Command to update the package version goes here"
-    -   validate_code: bandit -c .bandit.ini -f txt -r ${PACKAGE_DIRECTORY}
+    -   validate_code: |
+            if [ -z "$PACKAGE_DIR"  ]; then
+                PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
+            fi
+            bandit -c .bandit.ini -f txt -r ${PACKAGE_DIR}
     -   disable_sonarqube: rm sonar-project.properties || true  
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
     
