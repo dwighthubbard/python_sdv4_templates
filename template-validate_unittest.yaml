@@ -50,7 +50,7 @@ config:
     -   add_test_metadata: |
             $BASE_PYTHON -m pip install junitparser
             $BASE_PYTHON << EOF
-            import os
+            import os,subprocess
             from junitparser import JUnitXml
 
             testdir = os.path.join(os.environ["SD_ARTIFACTS_DIR"], 'test')
