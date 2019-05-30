@@ -48,7 +48,7 @@ config:
     -   update_version: echo "Update version"
     -   validate_code: tox $TOX_ARGS
     -   store_artifacts: |
-            BASE_PYTHON << EOF
+            $BASE_PYTHON << EOF
             import os, shutil
             testdir = os.path.join(os.environ["SD_ARTIFACTS_DIR"], 'test')
             os.makedirs(testdir, exist_ok=True)
