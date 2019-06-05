@@ -103,7 +103,7 @@ config:
                 sys.exit(0)
             try:
                 output = subprocess.check_output(['coverage', 'report'])
-            except (subprocess.CalledProcessErrror, FileNotFoundError):
+            except (subprocess.CalledProcessError, FileNotFoundError):
                 print('Not able to access coverage report, not updating coverage', flush=True)
                 sys.exit(0)
             lines = output.decode(errors='ignore').split(os.linesep)
