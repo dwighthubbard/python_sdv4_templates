@@ -10,7 +10,7 @@ config:
     image: manylinux2010
     environment:
         BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
-        PACKAGE_DIR: ""
+        PACKAGE_DIRECTORY: ""
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
     steps:
@@ -47,14 +47,14 @@ config:
             $VALID_VENV/bin/pip install .[lint]
     -   update_version: echo "Update version"
     -   validate_code: |
-            if [ -z "$PACKAGE_DIR"  ]; then
-                PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
+            if [ -z "$PACKAGE_DIRECTORY"  ]; then
+                PACKAGE_DIRECTORY="`$BASE_PYTHON setup.py --name`"
             fi
             OUTPUT_DIR="$SD_ARTIFACTS_DIR/reports/pylint"
             if [ -e "$OUTPUT_DIR" ]; then
                 mkdir -p "$OUTPUT_DIR"
             fi
             # $VALID_VENV/bin/pylint --output-format=parseable $PACKAGE_DIR
-            $VALID_VENV/bin/pylint -r n --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" $PACKAGE_DIR > $SD_ARTIFACTS_DIR/pylint.txt
+            $VALID_VENV/bin/pylint -r n --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" $PACKAGE_DIRECTORY > $SD_ARTIFACTS_DIR/pylint.txt
             cat $SD_ARTIFACTS_DIR/pylint.txt
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
