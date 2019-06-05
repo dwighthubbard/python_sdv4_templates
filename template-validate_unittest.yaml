@@ -62,7 +62,7 @@ config:
     -   add_test_metadata: |
             $BASE_PYTHON -m pip install junitparser
             $BASE_PYTHON << EOF
-            import os,subprocess, sys
+            import json, os,subprocess, sys
             from junitparser import JUnitXml
 
             testdir = os.path.join(os.environ["SD_ARTIFACTS_DIR"], 'test')
@@ -93,6 +93,12 @@ config:
             test_summary = f'{test_ok}/{test_run}'
             print(f'meta set tests.results {test_summary}')
             subprocess.call(['meta', 'set', 'tests.results', test_summary])
+            status = {
+                "status": "SUCCESS",
+                "message": f"{test_summary} tests passed"
+            }
+            print(f'meta set meta.status.validate_unittest \'{json.dumps(status)}\')
+            subprocess.call(['meta', 'set', 'meta.status.validate_unittest', json.dumps(status)])
             EOF
     -   add_coverage_metadata: |
             $BASE_PYTHON -m pip install coverage
