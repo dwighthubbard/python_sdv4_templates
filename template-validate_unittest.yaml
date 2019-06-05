@@ -97,7 +97,7 @@ config:
                 "status": "SUCCESS",
                 "message": f"{test_summary} tests passed"
             }
-            print(f'meta set meta.status.validate_unittest \'{json.dumps(status)}\')
+            print('meta set meta.status.validate_unittest', json.dumps(status))
             subprocess.call(['meta', 'set', 'meta.status.validate_unittest', json.dumps(status)])
             EOF
     -   add_coverage_metadata: |
