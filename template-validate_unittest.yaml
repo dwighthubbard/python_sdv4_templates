@@ -97,7 +97,7 @@ config:
     -   add_coverage_metadata: |
             $BASE_PYTHON -m pip install coverage
             $BASE_PYTHON << EOF
-            import os, subprocess
+            import os, subprocess, sys
             if not os.path.exists('.coverage'):
                 print('No coverage data found', flush=True)
                 sys.exit(0)
