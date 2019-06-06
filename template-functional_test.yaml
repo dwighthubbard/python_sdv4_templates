@@ -39,6 +39,7 @@ config:
                 fi
                 BASE_PYTHON="`which python3`"
             fi
+    -   install_pypirun: $BASE_PYTHON -m pip install pypirun
     -   setup_environment: |
             export BINDIR="`dirname ${BASE_PYTHON}`"
             export PATH="${BINDIR}:/opt/python/bin:${PATH}"
