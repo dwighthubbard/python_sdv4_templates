@@ -57,6 +57,7 @@ config:
             keys.sort()
             print(', '.join(keys))
             EOF
+    -   install_pypirun: $BASE_PYTHON -m pip install pypirun
     -   install_utility: |
             $BASE_PYTHON -m pip install setuptools 
             $BASE_PYTHON -m pip install wheel auditwheel pyroma twine
