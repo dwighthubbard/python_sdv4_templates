@@ -44,9 +44,9 @@ config:
             if [ ! -e "$BASE_PYTHON" ]; then
                 BASE_PYTHON="`which python3`"
             fi
-    -   install_tox: $BASE_PYTHON -m pip install tox
+    -   install_pypirun: $BASE_PYTHON -m pip install pypirun
     -   update_version: echo "Update version"
-    -   validate_code: tox $TOX_ARGS
+    -   validate_code: pypirun tox tox $TOX_ARGS
     -   store_artifacts: |
             $BASE_PYTHON << EOF
             import os, shutil
