@@ -40,11 +40,7 @@ config:
             if [ "$BINDIR" != "" ]; then
                 export PATH="${BINDIR}:${PATH}"
             fi
-    -   install_pylint: |
-            VALID_VENV="$SD_SOURCE_DIR/pylintvenv"
-            $BASE_PYTHON -m venv pylintvenv
-            $VALID_VENV/bin/pip install pylint
-            $VALID_VENV/bin/pip install .[lint]
+    -   install_pypirun: $BASE_PYTHON -m pip install pypirun
     -   update_version: echo "Update version"
     -   validate_code: |
             if [ -z "$PACKAGE_DIRECTORY"  ]; then
@@ -54,7 +50,6 @@ config:
             if [ -e "$OUTPUT_DIR" ]; then
                 mkdir -p "$OUTPUT_DIR"
             fi
-            # $VALID_VENV/bin/pylint --output-format=parseable $PACKAGE_DIR
-            $VALID_VENV/bin/pylint -r n --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" $PACKAGE_DIRECTORY > $SD_ARTIFACTS_DIR/pylint.txt
+            pypirun pylint,. pylint -r n --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" $PACKAGE_DIRECTORY > $SD_ARTIFACTS_DIR/pylint.txt
             cat $SD_ARTIFACTS_DIR/pylint.txt
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
