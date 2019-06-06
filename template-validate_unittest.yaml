@@ -97,8 +97,8 @@ config:
                 "status": "SUCCESS",
                 "message": f"{test_summary} tests passed"
             }
-            print('meta set meta.status.validate_unittest', json.dumps(status))
-            subprocess.call(['meta', 'set', 'meta.status.validate_unittest', json.dumps(status)])
+            print(f'meta set meta.status.{os.environ[SD_TEMPLATE_NAME]}', json.dumps(status))
+            subprocess.call(['meta', 'set', f'meta.status.{os.environ[SD_TEMPLATE_NAME]}', json.dumps(status)])
             EOF
     -   add_coverage_metadata: |
             $BASE_PYTHON -m pip install coverage
