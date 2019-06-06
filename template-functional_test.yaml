@@ -39,11 +39,10 @@ config:
                 fi
                 BASE_PYTHON="`which python3`"
             fi
-    -   install_pypirun: $BASE_PYTHON -m pip install pypirun
     -   setup_environment: |
             export BINDIR="`dirname ${BASE_PYTHON}`"
             export PATH="${BINDIR}:/opt/python/bin:${PATH}"
-    -   install_pypirun: echo "Code to install pypirun utility goes here"
+    -   install_pypirun: $BASE_PYTHON -m pip install pypirun
     -   configure_pip: echo "Add pip configuration commands here"
     -   install_dependencies: echo "OS Dependency install command goes here"
     -   init: echo "Command to initialize screwdriver operations goes here"
