@@ -60,7 +60,7 @@ config:
     -   install_utility: |
             $BASE_PYTHON -m pip install setuptools 
             $BASE_PYTHON -m pip install wheel auditwheel pyroma twine
-    -   update_version: pypirun screwdrivercd screwdrivercd_version --ignore_meta --update_meta
+    -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   package_code: |
             $BASE_PYTHON <<EOF
             import os,shlex,subprocess,sys

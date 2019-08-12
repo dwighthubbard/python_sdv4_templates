@@ -47,26 +47,7 @@ config:
     -   install_utility: |
             $BASE_PYTHON -m pip install setuptools 
             $BASE_PYTHON -m pip install wheel invirtualenv
-    -   update_version: |
-            $BASE_PYTHON << EOF
-            from configparser import ConfigParser
-            import os
-            import subprocess
-            import sys
-            
-            version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
-            if version == 'null':
-                print('Unable to fetch package.version from the ci pipeline metadata', flush=True)
-                sys.exit(0)
-            print(f'Version set to {version}')
-            parser = ConfigParser()
-            with open('setup.cfg') as fh:
-                parser.read_file(fh)
-            if 'metadata' in parser.sections():
-                version = parser.set('metadata', 'version', version)
-                with open('setup.cfg', 'w') as fh:
-                    parser.write(fh)
-            EOF
+    -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   package_code: |
             PACKAGE_VERSION=`meta get package.version`
             invirtualenv create_package rpm

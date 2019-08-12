@@ -45,7 +45,7 @@ config:
     -   install_pypirun: $BASE_PYTHON -m pip install pypirun
     -   install_dependencies: echo "OS Dependency install command goes here"
     -   init: echo "Command to initialize screwdriver operations goes here"
-    -   update_version: pypirun screwdrivercd screwdrivercd_version --ignore_meta --update_meta
+    -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   validate_code: |
             $BASE_PYTHON << EOF
             from configparser import ConfigParser

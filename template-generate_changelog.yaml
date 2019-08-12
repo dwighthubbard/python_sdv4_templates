@@ -39,7 +39,7 @@ config:
                 export PATH="${BINDIR}:${PATH}"
             fi
     -   install_utility: $BASE_PYTHON -m pip install towncrier
-    -   update_version: PACKAGE_VERSION="`meta get package.version`"
+    -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   generate_changelog: |
             towncrier --version=$PACKAGE_VERSION
             cp NEWS.txt ${SD_ARTIFACTS_DIR} || true

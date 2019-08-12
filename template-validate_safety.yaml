@@ -24,27 +24,34 @@ config:
             This step will install the package and check the installed packages against safety_db
             EOF
     -   setup_environment: |
-            export PATH=/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp27-cp27m/bin:$PATH
+            export PATH=/opt/python/cp38-cp38m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:$PATH
             export BINDIR="`dirname ${BASE_PYTHON}`"
             if [ "$BINDIR" != "" ]; then
                 export PATH="${BINDIR}:${PATH}"
             fi
     -   init_os: |
-            if [ -e "/usr/bin/apt-get" ]; then
-                echo "Updating the apt package list"
-                apt-get update
-                apt-get install -y python3 python3-venv python3-pip
-                apt-get install -y python3.6-venv || /bin/true
-                apt-get install -y python3.7-venv || /bin/true
-                apt-get install -y python3.8-venv || /bin/true
-            fi
+            PYTHON=`basename $BASE_PYTHON|sed "s/\.//"`
             if [ ! -e "$BASE_PYTHON" ]; then
-                BASE_PYTHON="`which python3`"
+                if [ -e "/usr/bin/apt-get" ]; then
+                    echo "Updating the apt package list"
+                    apt-get update
+                    apt-get install -y ${PYTHON} ${PYTHON}-venv ${PYTHON}-pip python3-venv python3-pip
+                fi
+                if [ -e "/usr/bin/apk" ]; then
+                    apk --update add python3 python3-dev py3-pip openssl ca-certificates
+                fi
+                if [ -e "/usr/bin/yum" ]; then
+                    yum install -y python3 python3-devel
+                fi
+                if [ "$BASE_PYTHON" = "" ]; then
+                    BASE_PYTHON="`which python3`"
+                fi
             fi
+    -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
     -   install_utility: |
             $BASE_PYTHON -m venv /tmp/safetydbvenv
             /tmp/safetydbvenv/bin/pip install safety
-    -   update_version: echo "Update version"
+    -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   install_app: /tmp/safetydbvenv/bin/pip install .
     -   validate_code: |
             /tmp/safetydbvenv/bin/safety check

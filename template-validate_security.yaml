@@ -23,32 +23,36 @@ config:
             cat << EOF
             Run python security analysis using the bandit tool
             EOF
-    -   init_os: |
-            PYTHON=`basename $BASE_PYTHON`
-            if [ -e "/usr/bin/apt-get" ]; then
-                echo "Updating the apt package list"
-                apt-get update
+    -   setup_environment: |
+            export PATH=/opt/python/cp38-cp38m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:$PATH
+            export BINDIR="`dirname ${BASE_PYTHON}`"
+            if [ "$BINDIR" != "" ]; then
+                export PATH="${BINDIR}:${PATH}"
             fi
+    -   init_os: |
+            PYTHON=`basename $BASE_PYTHON|sed "s/\.//"`
             if [ ! -e "$BASE_PYTHON" ]; then
                 if [ -e "/usr/bin/apt-get" ]; then
-                    echo "Found apt-get, configuring for debian distro"
-                    apt-get install -y python3 python3-venv python3-pip
-                    if [ "$PYTHON" != "" ]; then
-                        apt-get install -y ${PYTHON} ${PYTHON}-venv ${PYTHON}-pip
-                    fi
+                    echo "Updating the apt package list"
+                    apt-get update
+                    apt-get install -y ${PYTHON} ${PYTHON}-venv ${PYTHON}-pip python3-venv python3-pip
                 fi
-                BASE_PYTHON="`which python3`"
+                if [ -e "/usr/bin/apk" ]; then
+                    apk --update add python3 python3-dev py3-pip openssl ca-certificates
+                fi
+                if [ -e "/usr/bin/yum" ]; then
+                    yum install -y python3 python3-devel
+                fi
+                if [ "$BASE_PYTHON" = "" ]; then
+                    BASE_PYTHON="`which python3`"
+                fi
             fi
-    -   setup_environment: |
-            export BINDIR="`dirname ${BASE_PYTHON}`"
-            export PATH="${BINDIR}:/opt/python/bin:${PATH}"
-    -   install_pypirun: echo "Code to install pypirun utility goes here"
-    -   configure_pip: echo "Add pip configuration commands here"
+    -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
     -   install_utility: ${BASE_PYTHON} -m pip install bandit
     -   install_dependencies: echo "OS Dependency install command goes here"
     -   bandit_config: bandit-config-generator -o .bandit.ini ${SECURITY_BANDIT_CONFIG_ARGS}
     -   init: echo "Command to initialize screwdriver operations goes here"
-    -   update_version: echo "Command to update the package version goes here"
+    -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   validate_code: |
             if [ -z "$PACKAGE_DIR"  ]; then
                 PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"

@@ -46,7 +46,7 @@ config:
                 fi
             fi
     -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
-    -   update_version: echo "Update version"
+    -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   validate_code: |
             if [ -z "$PACKAGE_DIRECTORY"  ]; then
                 PACKAGE_DIRECTORY="`$BASE_PYTHON setup.py --name`"
