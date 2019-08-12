@@ -23,7 +23,6 @@ config:
             cat << EOF
             Run python security analysis using the bandit tool
             EOF
-    -   display_environment: printenv|sort
     -   init_os: |
             PYTHON=`basename $BASE_PYTHON`
             if [ -e "/usr/bin/apt-get" ]; then
