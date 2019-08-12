@@ -19,7 +19,6 @@ config:
             cat << EOF
             This step will run unittests using the tox tool
             EOF
-    -   display_environment: printenv|sort
     -   init_os: |
             if [ -e "/usr/bin/apt-get" ]; then
                 echo "Updating the apt package list"
