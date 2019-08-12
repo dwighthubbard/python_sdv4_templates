@@ -43,13 +43,6 @@ config:
             if [ "$BINDIR" != "" ]; then
                 export PATH="${BINDIR}:${PATH}"
             fi    
-    -   environment_keys: |
-            $BASE_PYTHON << EOF
-            import os
-            keys = list(os.environ.keys())
-            keys.sort()
-            print(', '.join(keys))
-            EOF
     -   install_rpm_deps: yum install -y rpm-build redhat-rpm-config
     -   install_utility: |
             $BASE_PYTHON -m pip install setuptools 
