@@ -17,7 +17,7 @@ config:
             cat << EOF
             This step will generate a new package verrsion and make it available in the CI Pipeline metadata
             EOF
-    -   display_environment: printenv|sort
+    # -   display_environment: printenv|sort
     -   init_os: |
             if [ ! -e "$BASE_PYTHON" ]; then
                 if [ -e "/usr/bin/apt-get" ]; then
