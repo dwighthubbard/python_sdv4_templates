@@ -9,11 +9,11 @@ images:
     manylinux1_32: quay.io/pypa/manylinux1_i686
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
 config:
-    image: alpine
-    # image: manylinux2010
+    # image: alpine
+    image: manylinux2010
     environment:
-        BASE_PYTHON: /usr/bin/python3
-        # BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
+        # BASE_PYTHON: /usr/bin/python3
+        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
     settings:
