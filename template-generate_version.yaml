@@ -1,61 +1,56 @@
 namespace: python
 name: generate_version
-description: Package the application as an sdist package
-version: 1.0.0
+description: Generate a package version for the pipeline
+version: 2019.803.10639
 maintainer: python-devel@oath.com
+images:
+    alpine: alpine
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
 config:
-    image: quay.io/pypa/manylinux2010_x86_64
-    # image: ubuntu:19.04
-    # image: alpine
+    image: alpine
+    # image: manylinux2010
     environment:
-        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
+        BASE_PYTHON: /usr/bin/python3
+        # BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
+    settings:
+        slack:
+        - pythonbuildstatus
     steps:
     -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
     -   motd: |
             cat << EOF
-            This step will generate a new package verrsion and make it available in the CI Pipeline metadata
+            Generate a package version for the pipeline
             EOF
-    # -   display_environment: printenv|sort
-    -   init_os: |
-            if [ ! -e "$BASE_PYTHON" ]; then
-                if [ -e "/usr/bin/apt-get" ]; then
-                    echo "Updating the apt package list"
-                    apt-get update
-                    apt-get install -y python3 python3-venv python3-pip
-                fi
-                if [ -e "/usr/bin/apk" ]; then
-                    apk --update add python py-pip openssl ca-certificates
-                fi
-                if [ "$BASE_PYTHON" = "" ]; then
-                    BASE_PYTHON="`which python3`"
-                fi
-            fi
+    -   display_environment: printenv|sort
+    -   disable_sonarqube: rm sonar-project.properties || true
     -   setup_environment: |
             export PATH=/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp27-cp27m/bin:$PATH
             export BINDIR="`dirname ${BASE_PYTHON}`"
             if [ "$BINDIR" != "" ]; then
                 export PATH="${BINDIR}:${PATH}"
             fi
-    -   generate_version: |
-            $BASE_PYTHON << EOF
-            from configparser import ConfigParser
-            import os
-            import subprocess
-            import sys
-            parser = ConfigParser()
-            with open('setup.cfg') as fh:
-                parser.read_file(fh)
-            version = parser.get('metadata', 'version', fallback=None)
-            if not version:
-                print('Unable to parse a version from the setup.cfg metadata section', file=sys.stderr)
-                sys.exit(1)
-            version_split = version.split('.')
-            version_split[-1] = os.environ['SD_BUILD_ID']
-            version = '.'.join(version_split)
-            print(f'New version: {version}')
-            subprocess.check_call(['meta', 'set', 'package.version', version]) 
-            EOF
-    -   disable_sonarqube: rm sonar-project.properties || true  
+    -   init_os: |
+            PYTHON=`basename $BASE_PYTHON|sed "s/\.//"`
+            if [ ! -e "$BASE_PYTHON" ]; then
+                if [ -e "/usr/bin/apt-get" ]; then
+                    echo "Updating the apt package list"
+                    apt-get update
+                    apt-get install -y ${PYTHON) ${PYTHON}-venv ${PYTHON}-pip python3-venv python3-pip
+                fi
+                if [ -e "/usr/bin/apk" ]; then
+                    apk --update add python3 python3-dev py3-pip openssl ca-certificates
+                fi
+                if [ -e "/usr/bin/yum" ]; then
+                    yum install -y python3 python3-devel
+                fi
+                if [ "$BASE_PYTHON" = "" ]; then
+                    BASE_PYTHON="`which python3`"
+                fi
+            fi
+    -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
+    -   generate_meta_version: pypirun screwdrivercd screwdrivercd_version --ignore_meta --update_meta
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
