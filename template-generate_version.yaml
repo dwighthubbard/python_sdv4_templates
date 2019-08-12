@@ -52,5 +52,5 @@ config:
                 fi
             fi
     -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
-    -   generate_meta_version: pypirun screwdrivercd screwdrivercd_version --ignore_meta --update_meta
+    -   generate_version: pypirun screwdrivercd screwdrivercd_version --ignore_meta --update_meta
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
