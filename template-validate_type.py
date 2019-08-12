@@ -19,7 +19,6 @@ config:
             cat << EOF
             This step will run unittests using the tox tool
             EOF
-    -   display_environment: printenv|sort
     -   setup_environment: |
             export PATH=/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp27-cp27m/bin:$PATH
             if [ "$BASE_PYTHON" = "" ]; then
