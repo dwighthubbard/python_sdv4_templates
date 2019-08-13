@@ -108,6 +108,10 @@ config:
                 except subprocess.CalledProcessError as error:
                     rc = error.returncode
                 os.chdir(cwd)
+            end_version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
+            if version != end_version:
+                print(f'Metadata package version changed from {version} to {end_version}, resetting it to {version}', flush=True)
+                subprocess.call(['meta', 'set', 'package.version', version])
             sys.exit(rc)
             EOF
     -   store_artifacts: echo "This template does not currently generate artifacts"

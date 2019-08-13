@@ -210,5 +210,6 @@ config:
             # print('Pushing the tags')
             # subprocess.call(['git', 'push', '--tags'])
             EOF
-    -   disable_sonarqube: rm sonar-project.properties || true  
+    -   disable_sonarqube: rm sonar-project.properties || true
+    -   publish_delay: sleep 60
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
