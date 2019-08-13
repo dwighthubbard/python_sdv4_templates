@@ -1,5 +1,5 @@
 namespace: python
-name: validate_safety
+name: validate_dependencies
 description: Run the unittest using the tox tool
 version: 1.0.0
 maintainer: python-devel@oath.com
