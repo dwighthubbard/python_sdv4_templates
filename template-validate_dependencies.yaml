@@ -48,12 +48,11 @@ config:
                 fi
             fi
     -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
-    -   install_utility: |
-            $BASE_PYTHON -m venv /tmp/safetydbvenv
-            /tmp/safetydbvenv/bin/pip install safety
     -   update_version: pypirun screwdrivercd screwdrivercd_version
-    -   install_app: /tmp/safetydbvenv/bin/pip install .
     -   validate_code: |
-            /tmp/safetydbvenv/bin/safety check
-    -   disable_sonarqube: rm sonar-project.properties || true  
+            pypirun safety,. safety check --json -o safetydb.json || true
+            mkdir -p $ARTIFACTS_DIR/report || true
+            cp safetydb.json $ARTIFACTS_DIR/report || true
+            pypirun safety,. safety check --full-report
+    -   disable_sonarqube: rm sonar-project.properties || true
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
