@@ -56,7 +56,7 @@ config:
             import os
             import subprocess
             import sys
-            version = os.environ.get('PACKAGE_VERSION, '')
+            version = os.environ.get(PACKAGE_VERSION, '')
             if not version:
                 sys.exit(0)
             status = {
