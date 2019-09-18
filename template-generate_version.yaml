@@ -50,4 +50,23 @@ config:
             fi
     -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
     -   generate_version: pypirun screwdrivercd screwdrivercd_version --ignore_meta --update_meta
+    -   update_status: |
+            PACKAGE_VERSION="`meta get package.version`"
+            $BASE_PYTHON << EOF
+            import os
+            import subprocess
+            import sys
+            version = os.environ.get('PACKAGE_VERSION, '')
+            if not version:
+                sys.exit(0)
+            status = {
+                "status": "SUCCESS",
+                "message": f"Package version={version}"
+            }
+            job_name = os.environ.get('SD_JOB_NAME', None)
+            if job_name:
+                job_name = job_name.split(':')[-1]
+                print(f'meta set meta.status.{job_name}', json.dumps(status))
+                subprocess.call(['meta', 'set', f'meta.status.{job_name}', json.dumps(status)])
+            EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
