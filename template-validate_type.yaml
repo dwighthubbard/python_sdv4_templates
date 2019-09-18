@@ -9,7 +9,7 @@ maintainer: python-devel@oath.com
 config:
     image: manylinux2010
     environment:
-        BASE_PYTHON: ""
+        BASE_PYTHON: "/opt/python/cp37-cp37m/bin/python3.7"
         PACKAGE_DIR: ""
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
