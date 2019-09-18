@@ -59,7 +59,7 @@ config:
             fi
     -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
     -   configure_pip: echo "No custom pip configuration"
-    -   install_dependencies: echo "No extra OS dependencies"
+    -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
     -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   validate_code:  pypirun --always_install screwdrivercd,. screwdrivercd_validate_type
     -   disable_sonarqube: rm sonar-project.properties || true  
