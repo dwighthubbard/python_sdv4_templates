@@ -72,5 +72,5 @@ config:
                 job_name = job_name.split(':')[-1]
                 print(f'meta set meta.status.{job_name}', json.dumps(status))
                 subprocess.call(['meta', 'set', f'meta.status.{job_name}', json.dumps(status)])
-            EOF || /bin/true
+            EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
