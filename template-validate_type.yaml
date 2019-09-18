@@ -1,9 +1,9 @@
 namespace: python
 name: validate_type
-description: Run the mypy type validator
+description: Validate type annotations in code for a python package
 images:
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
-    ubuntu: ubuntu:latest
+    ubuntu: ubuntu
 version: 1.0.0
 maintainer: python-devel@oath.com
 config:
@@ -13,11 +13,14 @@ config:
         PACKAGE_DIR: ""
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
+        MYPY_ARGS: --ignore-missing-imports
+        TYPE_CHECK_ENFORCING: true
+        TYPE_CHECK_REPORT_FORMAT: txt
     steps:
     -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
     -   motd: |
             cat << EOF
-            This step will run unittests using the tox tool
+            This step runs type checks using the MyPy tool
             EOF
     -   setup_environment: |
             export PATH=/opt/python/cp38-cp38m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:$PATH
@@ -43,13 +46,21 @@ config:
                     BASE_PYTHON="`which python3`"
                 fi
             fi
+            if [ -e "/usr/bin/apt-get" ]; then
+                # Debian removes the pip package bundled in the Python interpreter ensurepip module and instead uses
+                # the old pip command from the deb packages.  Which happens to have broken handling of multiple repo
+                # configurations.
+                # The following overwrites the broken pip with a version close to what is normally bundled with the Python
+                # interpreter.
+                # This is done using wget because if the pip configuration in the base container has multiple indexes it is
+                # not possible to do this with the pip command.
+                echo "Replacing debian broken pip wheel package"
+                wget -O /usr/share/python-wheels/pip-9.0.1-py2.py3-none-any.whl https://files.pythonhosted.org/packages/30/db/9e38760b32e3e7f40cce46dd5fb107b8c73840df38f0046d8e6514e675a1/pip-19.2.3-py2.py3-none-any.whl
+            fi
     -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
-    -   install_utility: |
-            $BASE_PYTHON -m pip install mypy 
-            $BASE_PYTHON -m pip install .[mypy]
+    -   configure_pip: echo "No custom pip configuration"
+    -   install_dependencies: echo "No extra OS dependencies"
     -   update_version: pypirun screwdrivercd screwdrivercd_version
-    -   validate_code: |
-            PACKAGE_NAME="`$BASE_PYTHON setup.py --name`"
-            $BINDIR/mypy -p $PACKAGE_NAME
+    -   validate_code:  pypirun --always_install screwdrivercd,. screwdrivercd_validate_type
     -   disable_sonarqube: rm sonar-project.properties || true  
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
