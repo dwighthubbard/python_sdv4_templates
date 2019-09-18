@@ -53,6 +53,7 @@ config:
     -   update_status: |
             PACKAGE_VERSION="`meta get package.version`"
             $BASE_PYTHON << EOF
+            import json
             import os
             import subprocess
             import sys
