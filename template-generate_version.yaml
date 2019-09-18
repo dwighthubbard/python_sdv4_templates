@@ -56,7 +56,11 @@ config:
             import os
             import subprocess
             import sys
-            version = os.environ.get(PACKAGE_VERSION, '')
+            try:
+                version = subprocess.check_output(['meta', 'get', 'package.version'])
+            except:
+                sys.exit(0)
+            version = version.decode(errors='ignore')
             if not version:
                 sys.exit(0)
             status = {
