@@ -198,7 +198,9 @@ config:
             EOF
     -   tag_release: |
             $BASE_PYTHON << EOF
-            import os, subprocess
+            import os
+            import subprocess
+            import sys
             version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
             if version == 'null':
                 print('No release version in metadata', flush=True)
