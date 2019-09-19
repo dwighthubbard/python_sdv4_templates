@@ -69,8 +69,11 @@ config:
                 "message": f"Package version={version}"
             }
             job_name = os.environ.get('SD_JOB_NAME', None)
+            pr = os.environ.get('SD_PULL_REQUEST', '')
             if job_name:
                 job_name = job_name.split(':')[-1]
+                if pr:
+                    job_name = 'PR:' + job_name
                 print(f'meta set meta.status.{job_name}', json.dumps(status))
                 subprocess.call(['meta', 'set', f'meta.status.{job_name}', json.dumps(status)])
             EOF
