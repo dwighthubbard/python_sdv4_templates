@@ -27,5 +27,9 @@ if [ ! -e "$BASE_PYTHON" ]; then
     fi
 fi
 
+# Update pip
+$BASE_PYTHON -m pip install -q -U pip
+$BASE_PYTHON -m pip install -q -U setuptools
+
 # install_pyrun
 $BASE_PYTHON -m pip install -q pypirun
