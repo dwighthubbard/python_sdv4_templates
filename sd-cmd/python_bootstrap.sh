@@ -3,7 +3,7 @@
 # setup_environment
 
 export PATH=/opt/python/cp38-cp38m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:$PATH
-3export BINDIR="`dirname ${BASE_PYTHON}`"
+export BINDIR="`dirname ${BASE_PYTHON}`"
 if [ "$BINDIR" != "" ]; then
     export PATH="${BINDIR}:${PATH}"
 fi
