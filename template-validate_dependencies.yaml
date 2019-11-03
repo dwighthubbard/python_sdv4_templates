@@ -49,10 +49,6 @@ config:
             fi
     -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
     -   update_version: pypirun screwdrivercd screwdrivercd_version
-    -   validate_code: |
-            pypirun safety,. safety check --json -o safetydb.json || true
-            mkdir -p $ARTIFACTS_DIR/report || true
-            cp safetydb.json $ARTIFACTS_DIR/report || true
-            pypirun safety,. safety check --full-report
+    -   validate_code: pypirun --always_install screwdrivercd,. screwdrivercd_validate_type
     -   disable_sonarqube: rm sonar-project.properties || true
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
