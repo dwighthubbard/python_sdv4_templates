@@ -1,0 +1,11 @@
+namespace: python # Namespace for the command
+name: python_bootstrap # Command name
+version: '1.0' # Major and Minor version number (patch is automatic), must be a string
+description: |
+  Bootstrap a Python 3.x runtime environment if one is not set up.
+usage: |
+  sd-cmd exec python/python_bootstrap@<VERSION>
+maintainer: python@ouroath.com
+format: binary # Format the command is in (binary, habitat)
+binary:
+    file: ./python_bootstrap.sh
