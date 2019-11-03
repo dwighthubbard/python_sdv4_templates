@@ -19,7 +19,7 @@ config:
             cat << EOF
             This step will run unittests using the tox tool
             EOF
-    -   init_os: sd-cmd exec python/python_bootstrap@latest
+    -   init_os: sd-cmd exec python/python_bootstrap
     -   install_pylint: |
             VALID_VENV="$SD_SOURCE_DIR/pylintvenv"
             $BASE_PYTHON -m venv pylintvenv
