@@ -27,6 +27,11 @@ if [ ! -e "$BASE_PYTHON" ]; then
     fi
 fi
 
+export BINDIR="`dirname ${BASE_PYTHON}`"
+if [ "$BINDIR" != "" ]; then
+    export PATH="${BINDIR}:${PATH}"
+fi
+
 # Update pip
 $BASE_PYTHON -m pip install -q -U pip
 $BASE_PYTHON -m pip install -q -U setuptools
@@ -35,5 +40,7 @@ $BASE_PYTHON -m pip install -q -U setuptools
 $BASE_PYTHON -m pip install -q pypirun
 
 cat << EOF > "/tmp/python_bootstrap.env"
+export BINDIR="$BINDIR"
 export BASE_PYTHON="$BASE_PYTHON"
+export PATH=\$PATH:\$BINDIR
 EOF
