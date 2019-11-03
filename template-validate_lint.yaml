@@ -21,7 +21,6 @@ config:
             EOF
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
-            cat /tmp/python_bootstrap.env
             source /tmp/python_bootstrap.env
     -   install_pylint: |
             VALID_VENV="$SD_SOURCE_DIR/pylintvenv"
