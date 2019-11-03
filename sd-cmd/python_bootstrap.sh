@@ -33,3 +33,7 @@ $BASE_PYTHON -m pip install -q -U setuptools
 
 # install_pyrun
 $BASE_PYTHON -m pip install -q pypirun
+
+cat << EOF > "/tmp/python_bootstrap.env"
+export BASE_PYTHON="$BASE_PYTHON"
+EOF
