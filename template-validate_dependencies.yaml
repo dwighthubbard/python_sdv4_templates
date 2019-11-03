@@ -1,6 +1,6 @@
 namespace: python
 name: validate_dependencies
-description: Run the unittest using the tox tool
+description: Run safety to check package dependencies
 version: 1.0.0
 maintainer: python-devel@oath.com
 images:
@@ -49,6 +49,6 @@ config:
             fi
     -   install_pyrun: $BASE_PYTHON -m pip install -q pypirun
     -   update_version: pypirun screwdrivercd screwdrivercd_version
-    -   validate_code: pypirun --always_install screwdrivercd,. screwdrivercd_validate_type
+    -   validate_code: pypirun --always_install screwdrivercd,. screwdrivercd_validate_deps
     -   disable_sonarqube: rm sonar-project.properties || true
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
