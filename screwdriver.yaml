@@ -11,7 +11,8 @@ jobs:
     publish_sd_cmd:
         image: quay.io/pypa/manylinux2010_x86_64
         steps:
-            - publish: sd-cmd publish -f sd-cmd/sd-command.yaml -t stable
+            - publish: |
+                (cd sd-cmd;sd-cmd publish -f sd-command.yaml -t stable)
         requires: [~commit]
 
     validate_templates:
