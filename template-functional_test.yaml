@@ -22,28 +22,10 @@ config:
             cat << EOF
             Run tests against the package published to the package repository
             EOF
-    # -   display_environment: printenv|sort
     -   init_os: |
-            PYTHON=`basename $BASE_PYTHON`
-            if [ -e "/usr/bin/apt-get" ]; then
-                echo "Updating the apt package list"
-                apt-get update
-            fi
-            if [ ! -e "$BASE_PYTHON" ]; then
-                if [ -e "/usr/bin/apt-get" ]; then
-                    echo "Found apt-get, configuring for debian distro"
-                    apt-get install -y python3 python3-venv python3-pip
-                    if [ "$PYTHON" != "" ]; then
-                        apt-get install -y ${PYTHON} ${PYTHON}-venv ${PYTHON}-pip
-                    fi
-                fi
-                BASE_PYTHON="`which python3`"
-            fi
-    -   setup_environment: |
-            export BINDIR="`dirname ${BASE_PYTHON}`"
-            export PATH="${BINDIR}:/opt/python/bin:${PATH}"
-    -   install_pypirun: $BASE_PYTHON -m pip install pypirun
-    -   install_dependencies: echo "OS Dependency install command goes here"
+            sd-cmd exec python/python_bootstrap@stable
+            source /tmp/python_bootstrap.env
+    -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
     -   init: echo "Command to initialize screwdriver operations goes here"
     -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   validate_code: |
