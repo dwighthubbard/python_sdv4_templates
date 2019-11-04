@@ -27,10 +27,9 @@ config:
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
     -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
+    -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   install_utility: ${BASE_PYTHON} -m pip install bandit
     -   bandit_config: bandit-config-generator -o .bandit.ini ${SECURITY_BANDIT_CONFIG_ARGS}
-    -   init: echo "Command to initialize screwdriver operations goes here"
-    -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   validate_code: |
             if [ -z "$PACKAGE_DIR"  ]; then
                 PACKAGE_DIR="`$BASE_PYTHON setup.py --name`"
