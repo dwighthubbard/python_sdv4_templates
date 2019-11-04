@@ -25,9 +25,9 @@ config:
             EOF
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
-            source /tmp/python_bootstrap.env    
+            source /tmp/python_bootstrap.env
+    -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
     -   install_utility: ${BASE_PYTHON} -m pip install bandit
-    -   install_dependencies: echo "OS Dependency install command goes here"
     -   bandit_config: bandit-config-generator -o .bandit.ini ${SECURITY_BANDIT_CONFIG_ARGS}
     -   init: echo "Command to initialize screwdriver operations goes here"
     -   update_version: pypirun screwdrivercd screwdrivercd_version
