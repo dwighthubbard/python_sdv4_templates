@@ -22,6 +22,7 @@ config:
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
+    -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
     -   install_pylint: |
             VALID_VENV="$SD_SOURCE_DIR/pylintvenv"
             $BASE_PYTHON -m venv pylintvenv
