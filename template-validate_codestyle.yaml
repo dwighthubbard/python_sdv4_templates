@@ -23,7 +23,8 @@ config:
             EOF
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
-            source /tmp/python_bootstrap.env    -   update_version: pypirun screwdrivercd screwdrivercd_version
+            source /tmp/python_bootstrap.env
+    -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   validate_code: |
             if [ -z "$PACKAGE_DIRECTORY"  ]; then
                 PACKAGE_DIRECTORY="`$BASE_PYTHON setup.py --name`"
