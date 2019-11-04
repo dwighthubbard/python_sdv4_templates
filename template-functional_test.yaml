@@ -26,7 +26,6 @@ config:
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
     -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
-    -   init: echo "Command to initialize screwdriver operations goes here"
     -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   validate_code: |
             $BASE_PYTHON << EOF
