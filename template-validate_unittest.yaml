@@ -29,6 +29,7 @@ config:
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
+    -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
     -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   validate_code: pypirun tox tox $TOX_ARGS
     -   store_artifacts: |
