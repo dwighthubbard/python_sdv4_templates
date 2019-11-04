@@ -23,8 +23,8 @@ config:
             Generate a package version for the pipeline
             EOF
     -   init_os: |
-        sd-cmd exec python/python_bootstrap@stable
-        source /tmp/python_bootstrap.env
+            sd-cmd exec python/python_bootstrap@stable
+            source /tmp/python_bootstrap.env
     -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
     -   generate_version: pypirun screwdrivercd screwdrivercd_version --ignore_meta --update_meta
     -   update_status: |
