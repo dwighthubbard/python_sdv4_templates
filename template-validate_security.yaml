@@ -3,6 +3,11 @@ name: validate_security
 description: Run python security analysis using the bandit tool
 version: 2019.516.05106
 maintainer: 54983+dwighthubbard@users.noreply.github.com
+images:
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
+    ubuntu: ubuntu:latest
 config:
     image: quay.io/pypa/manylinux2010_x86_64
     environment:
