@@ -3,7 +3,9 @@ name: validate_type
 description: Validate type annotations in code for a python package
 images:
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
-    ubuntu: ubuntu
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
+    ubuntu: ubuntu:latest
 version: 1.0.0
 maintainer: python-devel@oath.com
 config:
