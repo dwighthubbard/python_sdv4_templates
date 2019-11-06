@@ -53,8 +53,8 @@ fi
 $BASE_PYTHON -m pip install -q -U pip
 $BASE_PYTHON -m pip install -q -U setuptools
 
-# install_pyrun
-$BASE_PYTHON -m pip install -q pypirun
+# install screwdriver cd helpers
+$BASE_PYTHON -m pip install -q -U pypirun screwdrivercd
 
 cat << EOF > "/tmp/python_bootstrap.env"
 export BINDIR="$BINDIR"
