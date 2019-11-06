@@ -26,10 +26,6 @@ config:
             source /tmp/python_bootstrap.env
     -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
     -   update_version: pypirun screwdrivercd screwdrivercd_version
-    -   validate_code: |
-            if [ -z "$PACKAGE_DIRECTORY"  ]; then
-                PACKAGE_DIRECTORY="`$BASE_PYTHON setup.py --name`"
-            fi
-            pypirun pycodestyle,. pycodestyle $PACKAGE_DIRECTORY
+    -   validate_code: pypirun screwdrivercd,. screwdrivercd_validate_style
     -   disable_sonarqube: rm sonar-project.properties || true
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
