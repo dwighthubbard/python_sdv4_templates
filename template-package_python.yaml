@@ -192,6 +192,8 @@ config:
                 subprocess.call(['git', 'push', '--tags'], timeout=60)
             except subprocess.TimeoutExpired:
                 print('Timeout occurred pushing tags to the remote')
+                print('Git remotes:')
+                os.system('git remote -v')
             EOF
     -   disable_sonarqube: rm sonar-project.properties || true
     -   publish_delay: sleep 60
