@@ -190,7 +190,7 @@ config:
             print('Pushing the tags')
             try:
                 # subprocess.call(['git', 'push', '--tags'], timeout=60)
-                subprocess.call(['sd-step', 'exec', 'core/git', 'push --tags'], timeout=60)
+                subprocess.call(['sd-step', 'exec', 'core/git', 'git push --tags'], timeout=60)
             except subprocess.TimeoutExpired:
                 print('Timeout occurred pushing tags to the remote')
                 print('Git remotes:')
