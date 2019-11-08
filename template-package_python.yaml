@@ -187,9 +187,11 @@ config:
             print('Creating tag', flush=True)
             subprocess.call(['git', 'tag', '-a', version, '-m', f'Adding release {version}'])
             
-            # Currently the push operation is hanging, so this is disabled until the issue is determined.
-            # print('Pushing the tags')
-            # subprocess.call(['git', 'push', '--tags'])
+            print('Pushing the tags')
+            try:
+                subprocess.call(['git', 'push', '--tags'], timeout=60)
+            except subprocess.TimeoutExpired:
+                print('Timeout occurred pushing tags to the remote')
             EOF
     -   disable_sonarqube: rm sonar-project.properties || true
     -   publish_delay: sleep 60
