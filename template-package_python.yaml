@@ -187,6 +187,7 @@ config:
             print('Creating tag', flush=True)
             subprocess.call(['git', 'tag', '-a', version, '-m', f'Adding release {version}'])
             
+            sys.exit(0)
             print('Pushing the tags')
             try:
                 subprocess.call(['git', 'push', '--tags'], timeout=60)
