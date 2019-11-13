@@ -189,13 +189,14 @@ config:
             
             print('Pushing the tags')
             try:
-                # subprocess.call(['git', 'push', '--tags'], timeout=60)
-                subprocess.call(['sd-step', 'exec', 'core/git', 'git push --tags'], timeout=60)
+                subprocess.call(['git', 'push', '--tags'], timeout=60)
+                # subprocess.call(['sd-step', 'exec', 'core/git', 'git push --tags'], timeout=30)
             except subprocess.TimeoutExpired:
                 print('Timeout occurred pushing tags to the remote')
                 print('Git remotes:')
                 os.system('git remote -v')
+            except subprocess.CalledProcessError:
+                print('Push of git tag failed')
             EOF
-    -   disable_sonarqube: rm sonar-project.properties || true
     -   publish_delay: sleep 60
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
