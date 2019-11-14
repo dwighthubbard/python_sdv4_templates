@@ -1,0 +1,69 @@
+namespace: python
+name: documentation
+description: Generate and publish docs to github pages using mkdocs or sphinx.  
+version: 2019.1113.235438
+maintainer: python-devel@oath.com
+images:
+    alpine: alpine
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
+config:
+    image: manylinux2010
+    environment:
+        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
+        GIT_SHALLOW_CLONE: false
+        LANG: en_US.UTF-8
+        SUB_PACKAGE_DIR: ''
+        DOCUMENTATION_DEBUG: 'False'
+        DOCUMENTATION_FORMATS: mkdocs,sphinx
+        DOCUMENTATION_PUBLISH: 'True'
+        PYPIRUN_ARGS: --upgrade_pip
+        SPHINX_THEME: read_the_docs
+        SPHINX_COLLAPSE_NAVIGATION: 'True'
+        SPHINX_DISPLAY_VERSION: 'False'
+        SPHINX_NAVIGATION_DEPTH: '3'
+        SPHINX_BOOTSWATCH_THEME: journal
+    steps:
+    -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
+    -   motd: |
+            cat << EOF
+            Generate and publish docs to github pages using mkdocs or sphinx.  See https://git.ouroath.com/pages/dhubbard/sdv4_pythonv6_templates/documentation_templates/ for details.
+            EOF
+    -   disable_sonarqube: rm sonar-project.properties || true
+    -   setup_environment: |
+            export BINDIR="`dirname ${BASE_PYTHON}`"
+            export PATH="${BINDIR}:/opt/python/bin:${PATH}"
+    -   init_os: |
+            sd-cmd exec python/python_bootstrap@stable
+            source /tmp/python_bootstrap.env||/bin/true
+    -   install_dependencies: |
+            if [ -e "platform_requirements.cfg" ]; then
+                echo "Installing system dependencies from the legacy platform_requirements.cfg"
+                pypirun ouroath.installdeps screwdriver_install_deps
+            else
+                pypirun --always_install screwdrivercd screwdrivercd_install_deps
+            fi
+    -   determine_git_repo: |
+            function determine_repo {
+                git_remote_url="`git remote -v|grep ^origin|grep "(push)\$"|awk '{print $2}'`"
+                case "$git_remote_url" in
+                    *git@* ) export GIT_REPO="`echo $git_remote_url|cut -d":" -f 2|sed "s/\.git//"`";;
+                    *http* ) export GIT_REPO="`echo $git_remote_url|cut -d"/" -f 4-5|sed "s/\.git//"`";;
+                esac
+            }
+
+            if [ "$GIT_REPO" = "" ]; then
+                determine_repo
+                echo "Git repo has been set to $GIT_REPO"
+            fi
+    -   update_version: pypirun screwdrivercd screwdrivercd_version
+    -   publish_documentation: |
+            if [ -e "setup.py" ]; then
+                pypirun $PYPIRUN_ARGS "screwdrivercd[documentation],.[doc_build]" screwdrivercd_documentation
+            else
+                pypirun $PYPIRUN_ARGS screwdrivercd[documentation] screwdriver_documentation
+            fi
+    -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
+    secrets:
+    - GIT_ACCESS_TOKEN
