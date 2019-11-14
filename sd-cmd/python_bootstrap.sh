@@ -59,5 +59,5 @@ $BASE_PYTHON -m pip install -q -U pypirun screwdrivercd
 cat << EOF > "/tmp/python_bootstrap.env"
 export BINDIR="$BINDIR"
 export BASE_PYTHON="$BASE_PYTHON"
-export PATH=\$PATH:\$BINDIR
+export PATH=$PATH
 EOF
