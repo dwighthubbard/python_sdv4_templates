@@ -39,10 +39,9 @@ config:
             source /tmp/python_bootstrap.env||/bin/true
     -   setup_deploy_keys: |
             if [ ! -z "$GIT_KEY" ]; then
-                $BASE_PYTHON -m pip install -U screwdrivercd[documentation]
-                screwdriver_ssh_setup
+                pypirun screwdrivercd screwdriver_ssh_setup
                 eval "$(ssh-agent -s)"
-                screwdrivercd_github_deploykey
+                pypirun screwdrivercd screwdrivercd_github_deploykey
             fi
     -   install_dependencies: |
             if [ -e "platform_requirements.cfg" ]; then
