@@ -2,7 +2,7 @@
 
 # setup_environment
 
-export PATH=/opt/python/cp38-cp38m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:$PATH
+export PATH=/opt/python/cp38-cp38m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp35-cp35m/bin:$PATH
 export BINDIR="`dirname ${BASE_PYTHON}`"
 if [ "$BINDIR" != "" ]; then
     export PATH="${BINDIR}:${PATH}"
@@ -60,4 +60,7 @@ cat << EOF > "/tmp/python_bootstrap.env"
 export BINDIR="$BINDIR"
 export BASE_PYTHON="$BASE_PYTHON"
 export PATH=$PATH
+echo "BASE_PYTHON=\"$BASE_PYTHON\""
+echo "BINDIR=\"$BINDIR\""
+echo "PATH=\"$PATH\""
 EOF
