@@ -37,6 +37,13 @@ config:
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env||/bin/true
+    -   setup_deploy_keys: |
+            if [ ! -z "$GIT_KEY" ]; then
+                $BASE_PYTHON -m pip install -U screwdrivercd[documentation]
+                screwdriver_ssh_setup
+                eval "$(ssh-agent -s)"
+                screwdrivercd_github_deploykey
+            fi
     -   install_dependencies: |
             if [ -e "platform_requirements.cfg" ]; then
                 echo "Installing system dependencies from the legacy platform_requirements.cfg"
