@@ -38,7 +38,7 @@ config:
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env||/bin/true
     -   setup_deploy_keys: |
-            if [ ! -z "$GIT_KEY" ]; then
+            if [ ! -z "$GIT_DEPLOY_KEY" ]; then
                 pypirun screwdrivercd screwdriver_ssh_setup
                 eval "$(ssh-agent -s)"
                 pypirun screwdrivercd screwdrivercd_github_deploykey
