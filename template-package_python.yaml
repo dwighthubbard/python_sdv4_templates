@@ -18,6 +18,7 @@ config:
         PUBLISH: false
         TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
         PYROMA_MIN_SCORE: 8
+        PACKAGE_TAG: True
         PACKAGE_TYPES: sdist,wheel
         SETUP_ARGS: ''
     secrets:
@@ -191,6 +192,9 @@ config:
             
             if not os.environ.get('GIT_DEPLOY_KEY', ''):
                 print('Git deployment key is not present, cannot commit tags to the git repo')
+                sys.exit(0)
+            if not os.environ.get('PACKAGE_TAG', 'True').lower() in ['1', 'true', 'on']:
+                print('Tagging is disabled for this job')
                 sys.exit(0)
             version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
             if version == 'null':
