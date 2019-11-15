@@ -25,6 +25,8 @@ config:
         - PYPI_PASSWORD
         - TEST_PYPI_USER
         - TEST_PYPI_PASSWORD
+        - GIT_DEPLOY_KEY
+        - GIT_DEPLOY_KEY_PASSPHRASE
     steps:
     -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
     -   motd: |
@@ -35,6 +37,12 @@ config:
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
+    -   setup_deploy_keys: |
+        if [ ! -z "$GIT_DEPLOY_KEY" ]; then
+            pypirun screwdrivercd screwdrivercd_ssh_setup
+            eval "$(ssh-agent -s)"
+            pypirun screwdrivercd screwdrivercd_github_deploykey
+        fi
     -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
     -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   install_utility: |
@@ -180,6 +188,10 @@ config:
             import os
             import subprocess
             import sys
+            
+            if not os.environ.get('GIT_DEPLOY_KEY', ''):
+                print('Git deployment key is not present, cannot commit tags to the git repo')
+                sys.exit(0)
             version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
             if version == 'null':
                 print('No release version in metadata', flush=True)
@@ -187,7 +199,6 @@ config:
             print('Creating tag', flush=True)
             subprocess.call(['git', 'tag', '-a', version, '-m', f'Adding release {version}'])
             
-            sys.exit(0)
             print('Pushing the tags')
             try:
                 subprocess.call(['git', 'push', '--tags'], timeout=60)
