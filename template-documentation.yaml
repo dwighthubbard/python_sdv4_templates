@@ -24,9 +24,6 @@ config:
         SPHINX_DISPLAY_VERSION: 'False'
         SPHINX_NAVIGATION_DEPTH: '3'
         SPHINX_BOOTSWATCH_THEME: journal
-    secrets:
-    -   GIT_KEY
-    -   GIT_KEY_PASSPHRASE
     steps:
     -   begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
     -   motd: |
@@ -76,4 +73,7 @@ config:
             fi
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
     secrets:
-    - GIT_ACCESS_TOKEN
+    -   GIT_ACCESS_TOKEN
+    -   GIT_DEPLOY_KEY
+    -   GIT_DEPLOY_KEY_PASSPHRASE
+
