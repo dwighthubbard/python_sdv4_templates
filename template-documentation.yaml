@@ -68,7 +68,7 @@ config:
             if [ -e "setup.py" ]; then
                 pypirun $PYPIRUN_ARGS "screwdrivercd[documentation],.[doc_build]" screwdrivercd_documentation
             else
-                pypirun $PYPIRUN_ARGS screwdrivercd[documentation] screwdriver_documentation
+                pypirun $PYPIRUN_ARGS screwdrivercd[documentation] screwdrivercd_documentation
             fi
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
     secrets:
