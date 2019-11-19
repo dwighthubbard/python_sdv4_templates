@@ -67,7 +67,7 @@ config:
             os.makedirs(package_artifacts, exist_ok=True)
             os.makedirs(build_log_dir, exist_ok=True)
             os.makedirs(wheel_build_dir, exist_ok=True)
-            os.makedirs('dist', exists_ok=True)
+            os.makedirs('dist', exist_ok=True)
             
             def run_and_log_output(command, logfile):
                 with open(logfile, 'wb') as fh:
