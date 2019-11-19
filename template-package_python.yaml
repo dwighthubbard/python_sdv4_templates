@@ -48,7 +48,6 @@ config:
     -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
     -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   install_utility: |
-            $BASE_PYTHON -m pip install setuptools 
             $BASE_PYTHON -m pip install wheel auditwheel pyroma twine
     -   package_code: |
             $BASE_PYTHON <<EOF
