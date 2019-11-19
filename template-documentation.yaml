@@ -50,19 +50,6 @@ config:
             else
                 pypirun --always_install screwdrivercd screwdrivercd_install_deps
             fi
-    -   determine_git_repo: |
-            function determine_repo {
-                git_remote_url="`git remote -v|grep ^origin|grep "(push)\$"|awk '{print $2}'`"
-                case "$git_remote_url" in
-                    *git@* ) export GIT_REPO="`echo $git_remote_url|cut -d":" -f 2|sed "s/\.git//"`";;
-                    *http* ) export GIT_REPO="`echo $git_remote_url|cut -d"/" -f 4-5|sed "s/\.git//"`";;
-                esac
-            }
-
-            if [ "$GIT_REPO" = "" ]; then
-                determine_repo
-                echo "Git repo has been set to $GIT_REPO"
-            fi
     -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   publish_documentation: |
             if [ -e "setup.py" ]; then
