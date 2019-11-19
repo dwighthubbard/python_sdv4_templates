@@ -63,10 +63,11 @@ config:
             package_types = [ _.strip().lower() for _ in os.environ.get('PACKAGE_TYPES', 'sdist,wheel').split(',')]
             package_name = subprocess.check_output([sys.executable, 'setup.py', '--name']).decode(errors='ignore').strip()
             package_dir = os.environ.get('PACKAGE_DIR', package_name)
-                     
+            
             os.makedirs(package_artifacts, exist_ok=True)
             os.makedirs(build_log_dir, exist_ok=True)
             os.makedirs(wheel_build_dir, exist_ok=True)
+            os.makedirs('dist', exists_ok=True)
             
             def run_and_log_output(command, logfile):
                 with open(logfile, 'wb') as fh:
