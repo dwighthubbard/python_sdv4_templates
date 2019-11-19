@@ -6,10 +6,11 @@ maintainer: python-devel@oath.com
 images:
     alpine: alpine
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
     manylinux1_32: quay.io/pypa/manylinux1_i686
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
 config:
-    image: manylinux2010
+    image: manylinux2014
     environment:
         BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
         GIT_SHALLOW_CLONE: false
