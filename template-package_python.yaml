@@ -216,5 +216,11 @@ config:
             except subprocess.CalledProcessError:
                 print('Push of git tag failed')
             EOF
-    -   publish_delay: sleep 60
+    -   publish_delay: |
+            $BASE_PYTHON << EOF
+            import os, time
+            
+            if os.environ['PUBLISH'].lower() not in ['true', '1', 'on']:
+                time.sleep(60)
+            EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
