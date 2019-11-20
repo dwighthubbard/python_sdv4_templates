@@ -54,10 +54,10 @@ config:
     -   update_version: pypirun screwdrivercd screwdrivercd_version
     -   publish_documentation: |
             if [ -e "setup.py" ]; then
-                $BASE_PYTHON -m pip install screwdrivercd[documentation] .[doc_build]
+                $BASE_PYTHON -m pip install -q screwdrivercd[documentation] .[doc_build]
                 $BINDIR/screwdrivercd_documentation
             else
-                $BASE_PYTHON -m pip install screwdrivercd[documentation]
+                $BASE_PYTHON -m pip install -q screwdrivercd[documentation]
                 $BINDIR/screwdrivercd_documentation
             fi
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
