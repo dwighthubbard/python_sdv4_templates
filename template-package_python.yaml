@@ -109,16 +109,20 @@ config:
             import subprocess
             import sys
             
-            if not os.environ.get('GIT_DEPLOY_KEY', ''):
-                print('Git deployment key is not present, cannot commit tags to the git repo')
+            if os.environ['PUBLISH'].lower() not in ['true', '1', 'on']:
+                print('Publish is disabled, skipping tag operation', flush=True)
                 sys.exit(0)
             if not os.environ.get('PACKAGE_TAG', 'True').lower() in ['1', 'true', 'on']:
                 print('Tagging is disabled for this job')
+                sys.exit(0)
+            if not os.environ.get('GIT_DEPLOY_KEY', ''):
+                print('Git deployment key is not present, cannot commit tags to the git repo')
                 sys.exit(0)
             version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
             if version == 'null':
                 print('No release version in metadata', flush=True)
                 sys.exit(0)
+                
             print('Creating tag', flush=True)
             # subprocess.call(['git', 'tag', '-a', f'v{version}', '-m', f'Adding release {version}'])
             # subprocess.call(['git', 'tag', '-a', 'latest', '-m', f'Adding release {version}'])
