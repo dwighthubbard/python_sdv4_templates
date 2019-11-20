@@ -201,7 +201,8 @@ config:
                 print('No release version in metadata', flush=True)
                 sys.exit(0)
             print('Creating tag', flush=True)
-            subprocess.call(['git', 'tag', '-a', version, '-m', f'Adding release {version}'])
+            subprocess.call(['git', 'tag', '-a', f'v{version}, '-m', f'Adding release {version}'])
+            subprocess.call(['git', 'tag', '-a', 'latest', '-m', f'Adding release {version}'])
             
             print('Pushing the tags')
             try:
