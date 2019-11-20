@@ -55,10 +55,10 @@ config:
     -   publish_documentation: |
             if [ -e "setup.py" ]; then
                 $BASE_PYTHON -m pip install screwdrivercd[documentation] .[doc_build]
-                $BINDIR/screwdrivercd_documentaton
+                $BINDIR/screwdrivercd_documentation
             else
                 $BASE_PYTHON -m pip install screwdrivercd[documentation]
-                $BINDIR/screwdrivercd_documentaton
+                $BINDIR/screwdrivercd_documentation
             fi
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
     secrets:
