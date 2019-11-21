@@ -124,10 +124,14 @@ config:
                 sys.exit(0)
                 
             print('Creating tag', flush=True)
-            subprocess.call(['git', 'tag', '-a', f'v{version}', '-m', f'Adding release {version}'])
+            try:
+                message = subprocess.check_output(['git', 'log', '-n', '1']).decode(errors='ignore').split('\n')[4].strip()
+            except (subprocess.CalledProcessError, KeyError):
+                message = f'New release {version}'
+            subprocess.call(['git', 'tag', '-a', f'v{version}', '-m', message])
             # subprocess.call(['git', 'tag', '-a', 'latest', '-m', f'Adding release {version}'])
             # subprocess.call(['git', 'tag', f'v{version}'])
-            subprocess.call(['git', 'tag', '--force', 'latest'])
+            subprocess.call(['git', 'tag', '--force', '-m', message, 'latest'])
             
             print('Pushing the tags')
             try:
