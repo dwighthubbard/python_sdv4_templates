@@ -124,9 +124,9 @@ config:
                 sys.exit(0)
                 
             print('Creating tag', flush=True)
-            # subprocess.call(['git', 'tag', '-a', f'v{version}', '-m', f'Adding release {version}'])
+            subprocess.call(['git', 'tag', '-a', f'v{version}', '-m', f'Adding release {version}'])
             # subprocess.call(['git', 'tag', '-a', 'latest', '-m', f'Adding release {version}'])
-            subprocess.call(['git', 'tag', f'v{version}'])
+            # subprocess.call(['git', 'tag', f'v{version}'])
             subprocess.call(['git', 'tag', '--force', 'latest'])
             
             print('Pushing the tags')
