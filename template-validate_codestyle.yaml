@@ -24,8 +24,8 @@ config:
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
-    -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
-    -   update_version: pypirun screwdrivercd screwdrivercd_version
-    -   validate_code: pypirun screwdrivercd,. screwdrivercd_validate_style
+    -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
+    -   update_version: $BASE_PYTHON -m screwdrivercd.version
+    -   validate_code: $BASE_PYTHON -m screwdrivercd.validation.validate_style
     -   disable_sonarqube: rm sonar-project.properties || true
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
