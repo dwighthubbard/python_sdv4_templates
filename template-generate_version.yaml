@@ -1,18 +1,18 @@
 namespace: python
 name: generate_version
 description: Generate a package version for the pipeline
-version: 2019.803.10639
+version: 2019.12.10639
 maintainer: python-devel@oath.com
 images:
     alpine: alpine
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
     manylinux1_32: quay.io/pypa/manylinux1_i686
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
 config:
     # image: alpine
-    image: manylinux2010
+    image: manylinux2014
     environment:
-        # BASE_PYTHON: /usr/bin/python3
         BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
@@ -25,34 +25,7 @@ config:
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
-    -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
-    -   generate_version: pypirun screwdrivercd screwdrivercd_version --ignore_meta --update_meta
-    -   update_status: |
-            PACKAGE_VERSION="`meta get package.version`"
-            $BASE_PYTHON << EOF
-            import json
-            import os
-            import subprocess
-            import sys
-            try:
-                version = subprocess.check_output(['meta', 'get', 'package.version'])
-            except:
-                sys.exit(0)
-            version = version.decode(errors='ignore')
-            if not version:
-                sys.exit(0)
-            status = {
-                "status": "SUCCESS",
-                "message": f"Package version={version}"
-            }
-            job_name = os.environ.get('SD_JOB_NAME', None)
-            pr = os.environ.get('SD_PULL_REQUEST', '')
-            if job_name:
-                job_name = job_name.split(':')[-1]
-                # if pr:
-                #     job_name = 'PR:' + job_name
-                print(f'meta set meta.status.{job_name}', json.dumps(status))
-                subprocess.call(['meta', 'set', f'meta.status.{job_name}', json.dumps(status)])
-            EOF
+    -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
+    -   generate_version: $BASE_PYTHON -m screwdrivercd.version --ignore_meta --update_meta
     -   disable_sonarqube: rm sonar-project.properties || true
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
