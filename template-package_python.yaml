@@ -49,49 +49,7 @@ config:
     -   update_version: $BASE_PYTHON -m screwdrivercd.version
     -   package_code: $BASE_PYTHON -m  screwdrivercd.packaging.build_python
     -   check_packages: $BASE_PYTHON -m screwdrivercd.validation.validate_package_quality
-    -   publish_packages: |
-            $BASE_PYTHON << EOF
-            import os, subprocess, sys
-            package_dir = f'{os.environ["SD_ARTIFACTS_DIR"]}/packages'
-            if not os.path.exists(package_dir):
-               print('Package directory does not exist, no packages to validate', flush=True)
-               sys.exit(0)
-            if os.environ['PUBLISH'].lower() not in ['true', '1', 'on']:
-                print('Publish is disabled, skipping publish operation', flush=True)
-                sys.exit(0)
-            if 'test.pypi.org' in os.environ['TWINE_REPOSITORY_URL']:
-                print('Using test.pypi.org endpoint, getting user from TEST_PYPI_USER secret and password from TEST_PYPI_PASSWORD secret', flush=True)
-                user = os.environ.get('TEST_PYPI_USER', None)
-                password = os.environ.get('TEST_PYPI_PASSWORD', None)
-            else:
-                print('Using pypi.org endpoint, getting user from PYPI_USER secret and password from PYPI_PASSWORD secret', flush=True)
-                user = os.environ.get('PYPI_USER', None)
-                password = os.environ.get('PYPI_PASSWORD', None)
-            if not user:
-                print('Unable to publish to PYPI, user secret is not set', flush=True)
-                sys.exit(1)
-            if not password:
-                print('Unable to publish to PYPI, password secret is not set', flush=True)
-                sys.exit(1)
-            os.environ['TWINE_USERNAME'] = user
-            os.environ['TWINE_PASSWORD'] = password
-            bindir = os.path.dirname(sys.executable)
-            twine_cmd = os.path.join(bindir, 'twine')
-            twine_env = {'TWINE_USERNAME': user, 'TWINE_PASSWORD': password}
-            if not os.path.exists(twine_cmd):
-                print('The twine command is missing', flush=True)
-                sys.exit(1)
-            print(f'Publishing to {os.environ["TWINE_REPOSITORY_URL"]} as with user {user}', flush=True)
-            for filename in os.listdir(package_dir):
-                print(f'Uploading {filename}', flush=True)
-                command = [twine_cmd, 'upload', '--verbose', os.path.join(package_dir, filename)]
-                print(f'Running: {" ".join(command)}')
-                try:
-                    subprocess.check_call(command)
-                except subprocess.CalledProcessError as error:
-                    print(f'Upload of package file {filename!r} failed', flush=True)
-                    sys.exit(error.returncode)
-            EOF
+    -   publish_packages: $BASE_PYTHON -m screwdrivercd.packaging.publish_python
     -   tag_release: |
             $BASE_PYTHON << EOF
             import os
@@ -129,12 +87,5 @@ config:
                 os.system('git remote -v')
             except subprocess.CalledProcessError:
                 print('Push of git tag failed')
-            EOF
-    -   publish_delay: |
-            $BASE_PYTHON << EOF
-            import os, time
-            
-            if os.environ['PUBLISH'].lower() not in ['true', '1', 'on']:
-                time.sleep(60)
             EOF
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
