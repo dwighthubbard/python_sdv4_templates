@@ -2,12 +2,13 @@ namespace: python
 name: package_rpm
 description: Package the application as a rpm package
 images:
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
     manylinux1_32: quay.io/pypa/manylinux1_i686
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
     fedora: fedora:latest
     ubuntu: ubuntu:latest
-version: 1.0.1
+version: 1.1.1
 maintainer: python-devel@oath.com
 config:
     image: fedora
@@ -28,8 +29,8 @@ config:
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
-    -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
-    -   update_version: pypirun screwdrivercd screwdrivercd_version
+    -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
+    -   update_version: $BASE_PYTHON -m screwdrivercd.version
     -   install_rpm_deps: yum install -y rpm-build redhat-rpm-config
     -   install_utility: |
             $BASE_PYTHON -m pip install setuptools 
