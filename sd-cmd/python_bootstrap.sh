@@ -37,8 +37,13 @@ else
         FULL_BASE_PYTHON="`$BASE_PYTHON -c "import sys;print(sys.executable)" 2>/dev/null`"
         RC="$?"
         if [ "$RC" = "0" ]; then
-            export BASE_PYTHON="$FULL_BASE_PYTHON"
-            echo "    Updated BASE_PYTHON to $BASE_PYTHON"
+            echo "Checking to see if the pip module is available"
+            $FULL_BASE_PYTHON -m pip --help > /dev/null 2>&1
+            RC="$?"
+            if [ "$RC" = "0" ]; then
+                export BASE_PYTHON="$FULL_BASE_PYTHON"
+                echo "    Updated BASE_PYTHON to $BASE_PYTHON"
+            fi
         fi
     fi
 fi
