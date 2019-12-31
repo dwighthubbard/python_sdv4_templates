@@ -28,21 +28,23 @@ config:
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
-    -   install_dependencies: pypirun screwdrivercd screwdrivercd_install_deps
-    -   update_version: pypirun screwdrivercd screwdrivercd_version
+    -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
+    -   update_version: $BASE_PYTHON -m screwdrivercd.version
     -   validate_code: |
             $BASE_PYTHON << EOF
             from configparser import ConfigParser
             import datetime, os, shlex, subprocess, sys, tempfile, time
             cwd = os.getcwd()
             pypi_index = os.environ.get('PYPI_INDEX_URL', 'https://pypi.org/simple')
-            version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
             pytest_args = shlex.split(os.environ.get('PYTEST_ARGS', ''))
             test_dir = os.path.join(cwd, 'tests/')
             timeout_secs = int(os.environ.get('UPLOAD_TIMEOUT_SECS', 30))
             parser = ConfigParser()
             parser.read('setup.cfg')
             package_name = parser['metadata']['name']
+            version = parser['metadata'].get('version', '')
+            if not version:
+                version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
             try:
                 test_requires = [ _.strip() for _ in parser['options.extras_require']['test'].strip().split(os.linesep)]
             except KeyError:
