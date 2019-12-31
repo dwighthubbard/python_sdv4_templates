@@ -30,11 +30,9 @@ config:
             source /tmp/python_bootstrap.env
     -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
     -   update_version: |
-            PACKAGE_VERSION="`meta get package.version`"
-            echo "Version before $PACKAGE_VERSION"
             $BASE_PYTHON -m screwdrivercd.version
             PACKAGE_VERSION="`meta get package.version`"
-            echo "Version after $PACKAGE_VERSION"
+            echo "package.version=$PACKAGE_VERSION"
     -   validate_code: |
             $BASE_PYTHON << EOF
             from configparser import ConfigParser
