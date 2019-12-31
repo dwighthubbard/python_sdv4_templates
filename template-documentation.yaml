@@ -44,14 +44,8 @@ config:
                 eval "$(ssh-agent -s)"
                 pypirun screwdrivercd screwdrivercd_github_deploykey
             fi
-    -   install_dependencies: |
-            if [ -e "platform_requirements.cfg" ]; then
-                echo "Installing system dependencies from the legacy platform_requirements.cfg"
-                pypirun ouroath.installdeps screwdriver_install_deps
-            else
-                pypirun --always_install screwdrivercd screwdrivercd_install_deps
-            fi
-    -   update_version: pypirun screwdrivercd screwdrivercd_version
+    -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
+    -   update_version: $BASE_PYTHON -m screwdrivercd.version
     -   publish_documentation: |
             if [ -e "setup.py" ]; then
                 $BASE_PYTHON -m pip install -q screwdrivercd[documentation] .[doc_build]
