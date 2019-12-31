@@ -29,7 +29,12 @@ config:
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
     -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
-    -   update_version: $BASE_PYTHON -m screwdrivercd.version
+    -   update_version: |
+            PACKAGE_VERSION="`meta get package.version`"
+            echo "Version before $PACKAGE_VERSION"
+            $BASE_PYTHON -m screwdrivercd.version
+            PACKAGE_VERSION="`meta get package.version`"
+            echo "Version after $PACKAGE_VERSION"
     -   validate_code: |
             $BASE_PYTHON << EOF
             from configparser import ConfigParser
