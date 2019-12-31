@@ -44,7 +44,9 @@ config:
             package_name = parser['metadata']['name']
             version = parser['metadata'].get('version', '')
             if not version:
-                version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore')
+                version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore').strip()
+            if not version:
+                version = os.environ.get('PACKAGE_VERSION', '')
             try:
                 test_requires = [ _.strip() for _ in parser['options.extras_require']['test'].strip().split(os.linesep)]
             except KeyError:
