@@ -29,9 +29,9 @@ config:
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
-    -   install_dependencies: screwdrivercd screwdrivercd_install_deps
-    -   update_version: screwdrivercd screwdrivercd_version
-    -   validate_code: screwdrivercd screwdrivercd_validate_unittest
+    -   install_dependencies: screwdrivercd_install_deps
+    -   update_version: screwdrivercd_version
+    -   validate_code: screwdrivercd_validate_unittest
     -   add_test_metadata: |
             $BASE_PYTHON -m pip install junitparser
             $BASE_PYTHON << EOF
