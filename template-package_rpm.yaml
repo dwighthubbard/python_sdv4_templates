@@ -35,6 +35,9 @@ config:
     -   install_utility: |
             $BASE_PYTHON -m pip install setuptools 
             $BASE_PYTHON -m pip install wheel invirtualenv
+    -   store_spec: |
+            mkdir -p $SD_ARTIFACTS_DIR/config/rpm
+            invirtualenv create_package_config rpm --outfile $SD_ARTIFACTS_DIR/config/rpm/rpmpackage.spec
     -   package_code: |
             PACKAGE_VERSION=`meta get package.version`
             invirtualenv create_package rpm
