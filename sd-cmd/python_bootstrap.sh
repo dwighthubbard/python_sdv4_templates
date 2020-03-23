@@ -67,6 +67,8 @@ if [ ! -e "$BASE_PYTHON" ]; then
         RELEASEVER=$(rpm --eval %rhel)
 
         if [ $RELEASEVER = "6" ]; then
+            # CentOS6/RHEL6 has only EOL Python interpreters available so we add the ius python repo and use the
+            # Python 3.6 interpreter from there.
             rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$RELEASEVER https://repo.ius.io/RPM-GPG-KEY-IUS-$RELEASEVER
             yum --assumeyes install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$RELEASEVER.noarch.rpm https://repo.ius.io/ius-release-el$RELEASEVER.rpm
             yum install -y python36 python36-devel python36-pip
