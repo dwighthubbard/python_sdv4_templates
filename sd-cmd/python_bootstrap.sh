@@ -65,9 +65,48 @@ if [ ! -e "$BASE_PYTHON" ]; then
     fi
     if [ -e "/usr/bin/yum" ]; then
         echo "Installing redhat python3"
-        yum install -y python3 python3-devel python3-pip
-        /usr/bin/python3 -m pip install -U pip
+
+        # Try installing python3 without adding/enabling repos
+        if [ ! -e "/usr/bin/python3" ]; then
+            yum install -y python3 python3-devel python3-pip || /bin/true
+        fi
+        
+        if [ ! -e "/usr/bin/python3" ]; then
+            # Add the epel-release repo which has the interpreter on older rhel releases
+            yum install -y epel-release || /bin/true
+            yum install -y --enablerepo epel python3 python3-devel || /bin/true
+        fi
+
+        if [ ! -e "/usr/bin/python3" ]; then
+            # Add the epel-release repo which has the interpreter on older rhel releases
+            yum install -y --enablerepo epel python38 python38-devel || /bin/true
+        fi
+
+        if [ ! -e "/usr/bin/python3" ]; then
+            # Add the epel-release repo which has the interpreter on older rhel releases
+            yum install -y --enablerepo epel python37 python37-devel || /bin/true
+        fi
+
+        if [ ! -e "/usr/bin/python3" ]; then
+            # Add the epel-release repo which has the interpreter on older rhel releases
+            yum install -y --enablerepo epel python36 python36-devel || /bin/true
+        fi
+        
+        if [ ! -e "/usr/bin/python3" ]; then
+            # Add the epel-release repo which has the interpreter on older rhel releases
+            yum install -y --enablerepo epel python35 python35-devel || /bin/true
+        fi
+
+        if [ ! -e "/usr/bin/python3" ]; then
+            # Add the epel-release repo which has the interpreter on older rhel releases
+            yum install -y --enablerepo epel python34 python34-devel || /bin/true
+        fi
+
+        if [ -e /usr/bin/python ]; then
+            /usr/bin/python3 -m pip install -U pip
+        fi
     fi
+
     if [ "$BASE_PYTHON" = "" ]; then
         BASE_PYTHON="`which python3`"
     fi
