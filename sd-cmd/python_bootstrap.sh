@@ -64,6 +64,20 @@ if [ ! -e "$BASE_PYTHON" ]; then
         apk --update add python3 python3-dev py3-pip py3-cffi py3-cparser py3-openssl py3-lxml gcc musl-dev libc-dev libffi libffi-dev libxml2-dev libxslt-dev openssl openssl-dev ca-certificates
     fi
     if [ -e "/usr/bin/yum" ]; then
+        RELEASEVER=$(rpm --eval %rhel)
+
+        if [ $RELEASEVER = "6" ]; then
+            rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$RELEASEVER https://repo.ius.io/RPM-GPG-KEY-IUS-$RELEASEVER
+            yum --assumeyes install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$RELEASEVER.noarch.rpm https://repo.ius.io/ius-release-el$RELEASEVER.rpm
+            yum install -y python36 python36-devel python36-pip
+            if [ ! -e /usr/bin/pip3 ]; then
+                ln -s /usr/bin/pip3.6 /usr/bin/pip3
+                if [ ! -e /usr/bin/python3 ]; then
+                    ln -s /usr/bin/python3.6 /usr/bin/python3
+                 fi
+            fi
+        fi
+    
         echo "Installing redhat python3"
 
         # Try installing python3 without adding/enabling repos
