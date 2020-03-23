@@ -74,32 +74,32 @@ if [ ! -e "$BASE_PYTHON" ]; then
         if [ ! -e "/usr/bin/python3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
             yum install -y epel-release || /bin/true
-            yum install -y --enablerepo epel python3 python3-devel || /bin/true
+            yum install -y --enablerepo epel python3 python3-devel python3-pip || /bin/true
         fi
 
         if [ ! -e "/usr/bin/python3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y --enablerepo epel python38 python38-devel || /bin/true
+            yum install -y --enablerepo epel python38 python38-devel python38-pip || /bin/true
         fi
 
         if [ ! -e "/usr/bin/python3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y --enablerepo epel python37 python37-devel || /bin/true
+            yum install -y --enablerepo epel python37 python37-devel python37-pip || /bin/true
         fi
 
         if [ ! -e "/usr/bin/python3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y --enablerepo epel python36 python36-devel || /bin/true
+            yum install -y --enablerepo epel python36 python36-devel python36-pip || /bin/true
         fi
         
         if [ ! -e "/usr/bin/python3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y --enablerepo epel python35 python35-devel || /bin/true
+            yum install -y --enablerepo epel python35 python35-devel python35-pip || /bin/true
         fi
 
         if [ ! -e "/usr/bin/python3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y --enablerepo epel python34 python34-devel || /bin/true
+            yum install -y --enablerepo epel python34 python34-devel python34-pip || /bin/true
         fi
 
         if [ -e /usr/bin/python ]; then
