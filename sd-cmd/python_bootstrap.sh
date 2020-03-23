@@ -67,7 +67,7 @@ if [ ! -e "$BASE_PYTHON" ]; then
         echo "Installing redhat python3"
 
         # Try installing python3 without adding/enabling repos
-        if [ ! -e "/usr/bin/python3" ]; then
+        if [ ! -e "/usr/bin/pip3" ]; then
             yum install -y python3 python3-devel python3-pip || /bin/true
         fi
         
@@ -77,33 +77,33 @@ if [ ! -e "$BASE_PYTHON" ]; then
             yum install -y --enablerepo epel python3 python3-devel python3-pip || /bin/true
         fi
 
-        if [ ! -e "/usr/bin/python3" ]; then
+        if [ ! -e "/usr/bin/pip3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
             yum install -y --enablerepo epel python38 python38-devel python38-pip || /bin/true
         fi
 
-        if [ ! -e "/usr/bin/python3" ]; then
+        if [ ! -e "/usr/bin/pip3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
             yum install -y --enablerepo epel python37 python37-devel python37-pip || /bin/true
         fi
 
-        if [ ! -e "/usr/bin/python3" ]; then
+        if [ ! -e "/usr/bin/pip3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
             yum install -y --enablerepo epel python36 python36-devel python36-pip || /bin/true
         fi
         
-        if [ ! -e "/usr/bin/python3" ]; then
+        if [ ! -e "/usr/bin/pip3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
             yum install -y --enablerepo epel python35 python35-devel python35-pip || /bin/true
         fi
 
-        if [ ! -e "/usr/bin/python3" ]; then
+        if [ ! -e "/usr/bin/pip3" ]; then
             # Add the epel-release repo which has the interpreter on older rhel releases
             yum install -y --enablerepo epel python34 python34-devel python34-pip || /bin/true
         fi
 
-        if [ -e /usr/bin/python ]; then
-            /usr/bin/python3 -m pip install -U pip
+        if [ -e /usr/bin/pip3 ]; then
+            /usr/bin/pip3 install -U pip
         fi
     fi
 
