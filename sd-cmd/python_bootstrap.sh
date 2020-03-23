@@ -78,6 +78,7 @@ if [ ! -e "$BASE_PYTHON" ]; then
                     ln -s /usr/bin/python3.6 /usr/bin/python3
                  fi
             fi
+            export BASE_PYTHON="/usr/bin/python3.6"
         fi
     
         echo "Installing redhat python3"
@@ -158,10 +159,18 @@ if [ "$RC" != "0" ]; then
     $BASE_PYTHON -m pip install -q -U pip
 fi
 
+# Install setuptools
 $BASE_PYTHON -c "import setuptools,sys;sys.exit(int(int(setuptools.__version__.split('.')[0])<40))" >/dev/null 2>&1
 RC="$?"
 if [ "$RC" != "0" ]; then
     $BASE_PYTHON -m pip install -q -U setuptools
+fi
+
+# Install wheel
+$BASE_PYTHON -c "import wheel" >/dev/null 2>&1
+RC="$?"
+if [ "$RC" != "0" ]; then
+    $BASE_PYTHON -m pip install -q -U wheel
 fi
 
 # install_pyrun
