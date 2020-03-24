@@ -83,6 +83,9 @@ if [ ! -e "$BASE_PYTHON" ]; then
             fi
         else
             echo "Trying to install a python interpreter from epel"
+            # Add the epel-release repo which has the interpreter on older rhel releases
+            yum install -y epel-release || /bin/true
+
             if [ ! -e "/usr/bin/python3" ]; then
                 # Add the epel-release repo which has the interpreter on older rhel releases
                 yum install -y --enablerepo epel python38 python38-devel python38-pip || /bin/true
@@ -103,18 +106,17 @@ if [ ! -e "$BASE_PYTHON" ]; then
                 yum install -y --enablerepo epel python35 python35-devel python35-pip || /bin/true
             fi
 
+            if [ ! -e "/usr/bin/python3" ]; then
+                echo "Installing python from epel"
+                yum install -y --enablerepo epel python3 python3-devel python3-pip || /bin/true
+            fi
+
             # Try installing python3 without adding/enabling repos
             if [ ! -e "/usr/bin/python3" ]; then
                 echo "Installing redhat python3"
                 yum install -y python3 python3-devel python3-pip || /bin/true
             fi
 
-            if [ ! -e "/usr/bin/python3" ]; then
-                echo "Installing python from epel"
-                # Add the epel-release repo which has the interpreter on older rhel releases
-                yum install -y epel-release || /bin/true
-                yum install -y --enablerepo epel python3 python3-devel python3-pip || /bin/true
-            fi
         fi
         if [ -e /usr/bin/pip3 ]; then
             /usr/bin/pip3 install -U pip
