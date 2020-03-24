@@ -69,6 +69,7 @@ if [ ! -e "$BASE_PYTHON" ]; then
         if [ $RELEASEVER = "6" ]; then
             # CentOS6/RHEL6 has only EOL Python interpreters available so we add the ius python repo and use the
             # Python 3.6 interpreter from there.
+            echo "Installing ius python interpreter"
             rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$RELEASEVER https://repo.ius.io/RPM-GPG-KEY-IUS-$RELEASEVER
             yum --assumeyes install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$RELEASEVER.noarch.rpm https://repo.ius.io/ius-release-el$RELEASEVER.rpm
             yum install -y python36 python36-devel python36-pip
@@ -80,46 +81,41 @@ if [ ! -e "$BASE_PYTHON" ]; then
             if [ ! -e /usr/bin/python3 ]; then
                 ln -s /usr/bin/python3.6 /usr/bin/python3
             fi
-        fi
-    
-        echo "Installing redhat python3"
+        else
+            echo "Trying to install a python interpreter from epel"
+            if [ ! -e "/usr/bin/python3" ]; then
+                # Add the epel-release repo which has the interpreter on older rhel releases
+                yum install -y --enablerepo epel python38 python38-devel python38-pip || /bin/true
+            fi
 
-        # Try installing python3 without adding/enabling repos
-        if [ ! -e "/usr/bin/pip3" ]; then
-            yum install -y python3 python3-devel python3-pip || /bin/true
-        fi
-        
-        if [ ! -e "/usr/bin/python3" ]; then
-            # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y epel-release || /bin/true
-            yum install -y --enablerepo epel python3 python3-devel python3-pip || /bin/true
-        fi
+            if [ ! -e "/usr/bin/python3" ]; then
+                # Add the epel-release repo which has the interpreter on older rhel releases
+                yum install -y --enablerepo epel python37 python37-devel python37-pip || /bin/true
+            fi
 
-        if [ ! -e "/usr/bin/pip3" ]; then
-            # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y --enablerepo epel python38 python38-devel python38-pip || /bin/true
-        fi
+            if [ ! -e "/usr/bin/python3" ]; then
+                # Add the epel-release repo which has the interpreter on older rhel releases
+                yum install -y --enablerepo epel python36 python36-devel python36-pip || /bin/true
+            fi
 
-        if [ ! -e "/usr/bin/pip3" ]; then
-            # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y --enablerepo epel python37 python37-devel python37-pip || /bin/true
-        fi
+            if [ ! -e "/usr/bin/python3" ]; then
+                # Add the epel-release repo which has the interpreter on older rhel releases
+                yum install -y --enablerepo epel python35 python35-devel python35-pip || /bin/true
+            fi
 
-        if [ ! -e "/usr/bin/pip3" ]; then
-            # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y --enablerepo epel python36 python36-devel python36-pip || /bin/true
-        fi
-        
-        if [ ! -e "/usr/bin/pip3" ]; then
-            # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y --enablerepo epel python35 python35-devel python35-pip || /bin/true
-        fi
+            # Try installing python3 without adding/enabling repos
+            if [ ! -e "/usr/bin/python3" ]; then
+                echo "Installing redhat python3"
+                yum install -y python3 python3-devel python3-pip || /bin/true
+            fi
 
-        if [ ! -e "/usr/bin/pip3" ]; then
-            # Add the epel-release repo which has the interpreter on older rhel releases
-            yum install -y --enablerepo epel python34 python34-devel python34-pip || /bin/true
+            if [ ! -e "/usr/bin/python3" ]; then
+                echo "Installing python from epel"
+                # Add the epel-release repo which has the interpreter on older rhel releases
+                yum install -y epel-release || /bin/true
+                yum install -y --enablerepo epel python3 python3-devel python3-pip || /bin/true
+            fi
         fi
-
         if [ -e /usr/bin/pip3 ]; then
             /usr/bin/pip3 install -U pip
         fi
