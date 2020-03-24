@@ -78,6 +78,7 @@ if [ ! -e "$BASE_PYTHON" ]; then
                     ln -s /usr/bin/python3.6 /usr/bin/python3
                  fi
             fi
+            /usr/bin/pip3.6 install -U pip
             export BASE_PYTHON="/usr/bin/python3.6"
         fi
     
