@@ -72,14 +72,14 @@ if [ ! -e "$BASE_PYTHON" ]; then
             rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$RELEASEVER https://repo.ius.io/RPM-GPG-KEY-IUS-$RELEASEVER
             yum --assumeyes install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$RELEASEVER.noarch.rpm https://repo.ius.io/ius-release-el$RELEASEVER.rpm
             yum install -y python36 python36-devel python36-pip
-            if [ ! -e /usr/bin/pip3 ]; then
-                ln -s /usr/bin/pip3.6 /usr/bin/pip3
-                if [ ! -e /usr/bin/python3 ]; then
-                    ln -s /usr/bin/python3.6 /usr/bin/python3
-                 fi
-            fi
             /usr/bin/pip3.6 install -U pip
             export BASE_PYTHON="/usr/bin/python3.6"
+            if [ ! -e /usr/bin/pip3 ]; then
+                ln -s /usr/bin/pip3.6 /usr/bin/pip3
+            fi
+            if [ ! -e /usr/bin/python3 ]; then
+                ln -s /usr/bin/python3.6 /usr/bin/python3
+            fi
         fi
     
         echo "Installing redhat python3"
