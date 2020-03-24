@@ -112,7 +112,7 @@ if [ ! -e "$BASE_PYTHON" ]; then
             fi
 
             # Try installing python3 without adding/enabling repos
-            if [ ! -e "/usr/bin/python3" ]; then
+            if [ ! -e "/usr/bin/pip3" ]; then
                 echo "Installing redhat python3"
                 yum install -y python3 python3-devel python3-pip || /bin/true
             fi
