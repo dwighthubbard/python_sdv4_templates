@@ -1,7 +1,7 @@
 namespace: python
 name: documentation
 description: Generate and publish docs to github pages using mkdocs or sphinx.  
-version: 2019.1113.235438
+version: 2020.1211.0
 maintainer: python-devel@oath.com
 images:
     alpine: alpine
@@ -47,11 +47,15 @@ config:
     -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
     -   update_version: $BASE_PYTHON -m screwdrivercd.version
     -   publish_documentation: |
+            LOGDIR="$SD_ARTIFACTS_DIR/logs/$SD_TEMPLATE_NAME"
+            if [ ! -e "$LOGDIR" ]; then
+                mkdir -p "$LOGDIR"
+            fi
             if [ -e "setup.py" ]; then
-                $BASE_PYTHON -m pip install -q screwdrivercd[documentation] .[doc_build]
+                $BASE_PYTHON -m pip install screwdrivercd[documentation] .[doc_build] >> $LOGDIR/install.log
                 $BINDIR/screwdrivercd_documentation
             else
-                $BASE_PYTHON -m pip install -q screwdrivercd[documentation]
+                $BASE_PYTHON -m pip install screwdrivercd[documentation] >> $LOGDIR/install.log
                 $BINDIR/screwdrivercd_documentation
             fi
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
