@@ -53,11 +53,10 @@ config:
             fi
             if [ -e "setup.py" ]; then
                 $BASE_PYTHON -m pip install screwdrivercd[documentation] .[doc_build] >> $LOGDIR/install.log
-                $BINDIR/screwdrivercd_documentation
             else
                 $BASE_PYTHON -m pip install screwdrivercd[documentation] >> $LOGDIR/install.log
-                $BINDIR/screwdrivercd_documentation
             fi
+            $BASE_PYTHON -m screwdrivercd.documentation
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
     secrets:
     -   GIT_ACCESS_TOKEN
