@@ -52,9 +52,9 @@ config:
                 mkdir -p "$LOGDIR"
             fi
             if [ -e "setup.py" ]; then
-                $BASE_PYTHON -m pip install screwdrivercd[documentation] .[doc_build] >> $LOGDIR/install.log
+                $BASE_PYTHON -m pip install screwdrivercd[documentation] .[doc_build] 2>&1 | tee -a $LOGDIR/install.log
             else
-                $BASE_PYTHON -m pip install screwdrivercd[documentation] >> $LOGDIR/install.log
+                $BASE_PYTHON -m pip install screwdrivercd[documentation] 2>&1 | tee -a $LOGDIR/install.log
             fi
             $BASE_PYTHON -m screwdrivercd.documentation
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
