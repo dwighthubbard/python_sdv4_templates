@@ -18,7 +18,7 @@ config:
         SUB_PACKAGE_DIR: ''
         DOCUMENTATION_DEBUG: 'False'
         DOCUMENTATION_FORMATS: mkdocs,sphinx
-        DOCUMENTATION_PUBLISH: 'True'
+        # DOCUMENTATION_PUBLISH: 'True'
         PYPIRUN_ARGS: --upgrade_pip
         SPHINX_THEME: read_the_docs
         SPHINX_COLLAPSE_NAVIGATION: 'True'
