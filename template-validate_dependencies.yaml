@@ -30,6 +30,6 @@ config:
             source /tmp/python_bootstrap.env
     -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
     -   update_version: $BASE_PYTHON -m screwdrivercd.version
-    -   validate_code: pypirun --always_install screwdrivercd,. screwdrivercd_validate_deps
+    -   validate_code: pypirun --upgrade_pip --always_install screwdrivercd,. screwdrivercd_validate_deps
     -   disable_sonarqube: rm sonar-project.properties || true
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
