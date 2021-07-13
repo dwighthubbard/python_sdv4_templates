@@ -99,6 +99,11 @@ config:
     -   codecov: |
             if [ "$CODECOV_TOKEN" != "" ]; then
                 $BASE_PYTHON -m pip install codecov .[test]
-                codecov
+                
+                if [ -z $SD_PULL_REQUEST ]; then
+                    codecov -c ${SD_BUILD_SHA} --build ${SD_BUILD_ID}
+                else
+                    codecov --pr ${SD_PULL_REQUEST} -c ${SD_BUILD_SHA} --build ${SD_BUILD_ID}
+                fi
             fi
     -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
