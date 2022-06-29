@@ -16,7 +16,7 @@ config:
         LANG: en_US.UTF-8
         TEST_RUNNER: pytest
         TOX_ARGS: ''
-        TOX_ENVLIST: py36,py37,py38
+        TOX_ENVLIST: py37,py38,py39,py310
     secrets:
         - CODECOV_TOKEN
         - COVERALLS_REPO_TOKEN
