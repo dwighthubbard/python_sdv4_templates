@@ -2,7 +2,7 @@
 
 # setup_environment
 
-export PATH=/opt/python/cp38-cp38m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp35-cp35m/bin:$PATH
+export PATH=/opt/python/cp310-cp310/bin:/opt/python/cp39-cp39/bin:/opt/python/cp38-cp38/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp35-cp35m/bin:$PATH
 
 if [ "$BASE_PYTHON" = "" ]; then
     BASE_PYTHON="python3"
@@ -11,6 +11,11 @@ fi
 export BINDIR="`dirname ${BASE_PYTHON} 2>/dev/null`"
 if [ "$BINDIR" != "" ]; then
     export PATH="${BINDIR}:${PATH}"
+fi
+
+export LOG_DIR="$SD_ARTIFACTS_DIR/logs/sd-cmd/bootstrap_python"
+if [ ! -e "$LOG_DIR" ]; then
+    mkdir -p "$LOG_DIR"
 fi
 
 # init_os
@@ -185,7 +190,18 @@ $BASE_PYTHON -c "import screwdrivercd" >/dev/null 2>&1
 RC="$?"
 if [ "$RC" != "0" ]; then
     echo "Installing screwdrivercd"
-    $BASE_PYTHON -m pip install -q -U screwdrivercd
+    if [ -e "/usr/bin/yum" ]; then
+        RELEASEVER=$(rpm --eval %rhel)
+        for rpm_package in libffi-devel libxml2-devel libxslt-devel
+        do
+            rpm -q $rpm_package|grep "is not installed$" > /dev/null ;RC="$?"
+            if [ "$RC" = "0" ]; then
+                echo "Installing $rpm_package rpm package"
+                yum install -y $rpm_package > "$LOG_DIR/install_screwdrivercd_installrpm_${rpm_package}.log"
+            fi
+        done
+    fi
+    $BASE_PYTHON -m pip install -q -U screwdrivercd 2>&1 | tee "$LOG_DIR/install_screwdrivercd_installpip.log"
 fi
 
 cat << EOF > "/tmp/python_bootstrap.env"
