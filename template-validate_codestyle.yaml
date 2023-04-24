@@ -4,6 +4,7 @@ description: Run the unittest using the tox tool
 version: 1.0.0
 maintainer: python-devel@oath.com
 images:
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
     manylinux1_32: quay.io/pypa/manylinux1_i686
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
