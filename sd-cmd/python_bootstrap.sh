@@ -180,6 +180,13 @@ if [ ! -e "/usr/bin/cargo" ]; then
 fi
 
 if [ ! -e "/usr/bin/cargo" ]; then
+    echo "Installing rust using rustup"
+    python3 -c "import urllib.request;fh=open('/tmp/sh.rustup.rs','wb');fh.write(urllib.request.urlopen('https://sh.rustup.rs').read())"
+    sh sh.rustup.rs || /bin/true
+    rm /tmp/sh.rustup.rs || /bin/true
+fi
+
+if [ ! -e "/usr/bin/cargo" ]; then
     echo "Cargo is missing, disabling cryptography rust"
     export CRYPTOGRAPHY_DONT_BUILD_RUST="1"
 fi
