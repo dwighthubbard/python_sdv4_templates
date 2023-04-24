@@ -2,6 +2,7 @@ namespace: python
 name: validate_lint
 description: Run the unittest using the tox tool
 images:
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
     manylinux1_32: quay.io/pypa/manylinux1_i686
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
