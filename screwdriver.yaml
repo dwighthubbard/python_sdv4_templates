@@ -4,7 +4,7 @@ jobs:
     publish_templates:
         image: node:6
         steps:
-            - install: npm install screwdriver-template-main
+            - install: npm install screwdriver-template-main@1.7.0
             - publish: ./ci_scripts/process_templates publish
         requires: [~commit]
         
@@ -17,6 +17,6 @@ jobs:
     validate_templates:
         image: node:6
         steps:
-            - install: npm install screwdriver-template-main
+            - install: npm install screwdriver-template-main@1.7.0
             - validate: ./ci_scripts/process_templates validate
         requires: [~pr]
