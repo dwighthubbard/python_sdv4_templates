@@ -66,7 +66,7 @@ if [ ! -e "$BASE_PYTHON" ]; then
     fi
     if [ -e "/sbin/apk" ]; then
         echo "Alpine python"
-        apk --update add python3 python3-dev py3-pip py3-cffi py3-cparser py3-openssl py3-lxml gcc musl-dev libc-dev libffi libffi-dev libxml2-dev libxslt-dev openssl openssl-dev ca-certificates
+        apk --update add python3 python3-dev py3-pip py3-cffi py3-cparser py3-openssl py3-lxml gcc musl-dev libc-dev libffi libffi-dev libxml2-dev libxslt-dev openssl openssl-dev ca-certificates cargo
     fi
     if [ -e "/usr/bin/yum" ]; then
         RELEASEVER=$(rpm --eval %rhel)
@@ -175,6 +175,7 @@ if [ ! -e "/usr/bin/cargo" ]; then
 fi
 
 if [ ! -e "/usr/bin/cargo" ]; then
+    echo "Cargo is missing, disabling cryptography rust"
     export CRYPTOGRAPHY_DONT_BUILD_RUST="1"
 fi
 
@@ -244,6 +245,6 @@ echo "BINDIR=\"$BINDIR\""
 echo "PATH=\"$PATH\""
 EOF
 if [ "$CRYPTOGRAPHY_DONT_BUILD_RUST" != "" ]; then
-    echo "    CRYPTOGRAPHY_DONT_BUILD_RUST=$CRYPTOGRAPHY_DONT_BUILD_RUST"
+    echo "CRYPTOGRAPHY_DONT_BUILD_RUST=$CRYPTOGRAPHY_DONT_BUILD_RUST" >> /tmp/python_bootstrap.env
 fi
 
