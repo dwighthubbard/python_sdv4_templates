@@ -93,6 +93,21 @@ if [ ! -e "$BASE_PYTHON" ]; then
 
             if [ ! -e "/usr/bin/python3" ]; then
                 # Add the epel-release repo which has the interpreter on older rhel releases
+                yum install -y --enablerepo epel python38 python31-devel python31-pip || /bin/true
+            fi
+
+            if [ ! -e "/usr/bin/python3" ]; then
+                # Add the epel-release repo which has the interpreter on older rhel releases
+                yum install -y --enablerepo epel python38 python310-devel python310-pip || /bin/true
+            fi
+
+            if [ ! -e "/usr/bin/python3" ]; then
+                # Add the epel-release repo which has the interpreter on older rhel releases
+                yum install -y --enablerepo epel python38 python39-devel python39-pip || /bin/true
+            fi
+ 
+            if [ ! -e "/usr/bin/python3" ]; then
+                # Add the epel-release repo which has the interpreter on older rhel releases
                 yum install -y --enablerepo epel python38 python38-devel python38-pip || /bin/true
             fi
 
@@ -120,6 +135,15 @@ if [ ! -e "$BASE_PYTHON" ]; then
             if [ ! -e "/usr/bin/pip3" ]; then
                 echo "Installing redhat python3"
                 yum install -y python3 python3-devel python3-pip || /bin/true
+            fi
+            
+            # Try installing cargo for rust support
+            if [ ! -e "/usr/bin/cargo" ]; then
+                yum install -y --enablerepo epel cargo || /bin/true
+            fi
+            
+            if [ ! -e "/usr/bin/cargo" ]; then
+                export CRYPTOGRAPHY_DONT_BUILD_RUST="1"
             fi
 
         fi
@@ -214,3 +238,7 @@ echo "BASE_PYTHON_BIN=\"$BASE_PYTHON_BIN\""
 echo "BINDIR=\"$BINDIR\""
 echo "PATH=\"$PATH\""
 EOF
+if [ "$CRYPTOGRAPHY_DONT_BUILD_RUST" != "" ]; then
+    echo "    CRYPTOGRAPHY_DONT_BUILD_RUST=$CRYPTOGRAPHY_DONT_BUILD_RUST"
+fi
+
