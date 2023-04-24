@@ -161,6 +161,11 @@ if [ -e "/usr/bin/apt-get" ]; then
         /usr/bin/apt-get install -y wget
     fi
     wget -O /usr/share/python-wheels/pip-9.0.1-py2.py3-none-any.whl https://files.pythonhosted.org/packages/30/db/9e38760b32e3e7f40cce46dd5fb107b8c73840df38f0046d8e6514e675a1/pip-19.2.3-py2.py3-none-any.whl
+    # $BASE_PYTHON -m pip install -U pip
+fi
+
+if [ "$BASE_PYTHON" != "" ]; then
+    echo "Upgrading pip"
     $BASE_PYTHON -m pip install -U pip
 fi
 
