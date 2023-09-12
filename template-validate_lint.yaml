@@ -12,7 +12,7 @@ maintainer: python-devel@oath.com
 config:
     image: manylinux2014
     environment:
-        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
+        BASE_PYTHON: /opt/python/cp311-cp311/python3
         PACKAGE_DIRECTORY: ""
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
