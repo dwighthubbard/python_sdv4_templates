@@ -93,17 +93,17 @@ if [ ! -e "$BASE_PYTHON" ]; then
 
             if [ ! -e "/usr/bin/python3" ]; then
                 # Add the epel-release repo which has the interpreter on older rhel releases
-                yum install -y --enablerepo epel python38 python31-devel python31-pip || /bin/true
+                yum install -y --enablerepo epel python311 python311-devel python311-pip || /bin/true
             fi
 
             if [ ! -e "/usr/bin/python3" ]; then
                 # Add the epel-release repo which has the interpreter on older rhel releases
-                yum install -y --enablerepo epel python38 python310-devel python310-pip || /bin/true
+                yum install -y --enablerepo epel python310 python310-devel python310-pip || /bin/true
             fi
 
             if [ ! -e "/usr/bin/python3" ]; then
                 # Add the epel-release repo which has the interpreter on older rhel releases
-                yum install -y --enablerepo epel python38 python39-devel python39-pip || /bin/true
+                yum install -y --enablerepo epel python39 python39-devel python39-pip || /bin/true
             fi
  
             if [ ! -e "/usr/bin/python3" ]; then
