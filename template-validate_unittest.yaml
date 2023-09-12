@@ -12,7 +12,7 @@ images:
 config:
     image: manylinux2014
     environment:
-        BASE_PYTHON: BASE_PYTHON: /opt/python/cp311-cp311/python3
+        BASE_PYTHON: /opt/python/cp311-cp311/python3
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
         TEST_RUNNER: pytest
