@@ -25,6 +25,13 @@ config:
     -   init_os: |
             sd-cmd exec python/python_bootstrap@stable
             source /tmp/python_bootstrap.env
+    -   ensure_setuppy: |
+            if [ ! -e "setup.py" ]; then
+            cat > setup.py <<EOF
+            import setuptools
+            setuptools.setup()
+            EOF
+            fi
     -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
     -   update_version: $BASE_PYTHON -m screwdrivercd.version
     -   validate_code: $BASE_PYTHON -m screwdrivercd.validation.validate_style
