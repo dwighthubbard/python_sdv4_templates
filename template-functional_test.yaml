@@ -12,7 +12,7 @@ maintainer: 54983+dwighthubbard@users.noreply.github.com
 config:
     image: manylinux2014
     environment:
-        BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3.7
+        BASE_PYTHON: /opt/python/cp311-cp311/bin/python3
         GIT_SHALLOW_CLONE: false
         LANG: en_US.UTF-8
         PYPI_INDEX_URL: https://pypi.org/simple
