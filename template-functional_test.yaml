@@ -66,6 +66,7 @@ config:
                 venv_pip = os.path.join(venv_bin_dir, 'pip')
                 venv_pytest = os.path.join(tempdir, 'bin/pytest')
                 subprocess.check_call([venv_pip, 'install', '-U', 'setuptools'])
+                subprocess.check_call([venv_pip, 'install', '-U', 'wheel'])
                 subprocess.check_call([venv_pip, 'install', '-U', 'pip'])                
                 subprocess.check_call([venv_pip, 'install', '-q', 'pytest'])
                 if install_requires:
