@@ -59,14 +59,14 @@ config:
             except KeyError:
                 install_requires = []
             with tempfile.TemporaryDirectory() as tempdir:
-                subprocess.check_call([sys.executable, '-m', 'venv', tempdir])
+                subprocess.check_call([os.environ['BASE_PYTHON'], '-m', 'venv', tempdir])
                 venv_bin_dir = os.path.join(tempdir, 'bin')                
                 os.environ['PATH'] = f'{venv_bin_dir}:{os.environ["PATH"]}'
                 venv_activate = os.path.join(venv_bin_dir, 'activate')
                 venv_pip = os.path.join(venv_bin_dir, 'pip')
                 venv_pytest = os.path.join(tempdir, 'bin/pytest')
-                subprocess.check_call([venv_pip, 'install', '-U', '-q', 'setuptools'])
-                subprocess.check_call([venv_pip, 'install', '-U', '-q', 'pip'])                
+                subprocess.check_call([venv_pip, 'install', '-U', 'setuptools'])
+                subprocess.check_call([venv_pip, 'install', '-U', 'pip'])                
                 subprocess.check_call([venv_pip, 'install', '-q', 'pytest'])
                 if install_requires:
                     print('Installing dependencies from production pypi')
