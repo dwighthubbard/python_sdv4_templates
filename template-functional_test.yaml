@@ -78,7 +78,7 @@ config:
                 timeout_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout_secs)
                 while datetime.datetime.now() < timeout_time:
                     try:
-                        command = [venv_pip, 'install', '-q', '-i', pypi_index, ' --extra-index-url', 'https://pypi.org/simple', f'{package_name}=={version}']
+                        command = [venv_pip, 'install', '-i', pypi_index, '--extra-index-url', 'https://pypi.org/simple', f'{package_name}=={version}']
                         print(f'Trying to install package package using command {" ".join(command)}', flush=True)
                         subprocess.check_call(command)
                         break
