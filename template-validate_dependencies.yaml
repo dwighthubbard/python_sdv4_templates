@@ -10,7 +10,7 @@ images:
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
     ubuntu: ubuntu:latest
 config:
-    image: manylinux2010
+    image: alma8
     environment:
         BASE_PYTHON: /opt/python/cp311-cp311/bin/python3
         GIT_SHALLOW_CLONE: false
