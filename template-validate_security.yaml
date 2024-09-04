@@ -4,13 +4,14 @@ description: Run python security analysis using the bandit tool
 version: 2019.516.05106
 maintainer: 54983+dwighthubbard@users.noreply.github.com
 images:
+    alma8: quay.io/pypa/manylinux_2_28_x86_64
     manylinux2014: quay.io/pypa/manylinux2014_x86_64
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
     manylinux1_32: quay.io/pypa/manylinux1_i686
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
     ubuntu: ubuntu:latest
 config:
-    image: manylinux2014
+    image: alma8
     environment:
         BASE_PYTHON: /opt/python/cp311-cp311/bin/python3
         GIT_SHALLOW_CLONE: false
