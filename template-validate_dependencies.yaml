@@ -4,6 +4,7 @@ description: Run safety to check package dependencies
 version: 1.0.0
 maintainer: python-devel@oath.com
 images:
+    alma8: quay.io/pypa/manylinux_2_28_x86_64
     manylinux2010: quay.io/pypa/manylinux2010_x86_64
     manylinux1_32: quay.io/pypa/manylinux1_i686
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
@@ -16,7 +17,7 @@ config:
         LANG: en_US.UTF-8
         TEST_RUNNER: pytest
         TOX_ARGS: ''
-        TOX_ENVLIST: py36,py37,py38
+        TOX_ENVLIST: py38,py39,py310,py311
     secrets:
         - CODECOV_TOKEN
     steps:
